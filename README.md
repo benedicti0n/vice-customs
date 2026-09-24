@@ -29,6 +29,20 @@ BOOT → GARAGE → VEHICLE SELECT → PAINT BOOTH → REVEAL → BUILD ANALYSIS
 
 Three fictional vehicles are included (SERAPH R, TEMPEST VX, MARLIN 88) — original parametric side-view silhouettes rendered as layered 2D canvas art. No 3D, no game assets, no copyrighted material.
 
+## Documentation
+
+Detailed technical documentation lives in [`/docs`](./docs/00-index.md).
+
+- [Architecture](./docs/02-architecture.md)
+- [Vehicle Rendering](./docs/05-vehicle-rendering.md)
+- [Livery System](./docs/06-livery-system.md)
+- [Image Analysis](./docs/07-image-analysis.md)
+- [Unlayer Integration](./docs/08-unlayer-integration.md)
+- [Scene System](./docs/09-scene-system.md)
+- [Testing & Verification](./docs/13-testing-and-verification.md)
+- [Deployment](./docs/14-deployment.md)
+- [Changelog](./docs/16-changelog.md)
+
 ## Technologies
 
 - Next.js (App Router) 16
@@ -82,5 +96,6 @@ lib/
   vehicle/           parametric vehicle geometry (3 silhouettes)
   livery/            canvas compositor, image analysis, template
   game/              vehicles, classifications, copy, build numbers, context
+docs/                living project documentation (see Documentation above)
 scripts/             dev-only art/analysis verification tools
 ```
