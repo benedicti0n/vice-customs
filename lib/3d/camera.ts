@@ -26,7 +26,7 @@ export class CinematicCamera {
     void _canvas;
     this.current = { ...shot };
     this.mode = mode;
-    this.camera = new ArcRotateCamera("vc-cam", shot.alpha, shot.beta, shot.radius, shot.target.clone(), scene);
+    this.camera = new ArcRotateCamera("vc-cam", shot.alpha, shot.beta, shot.radius, shot.target.clone(), scene, true);
     this.camera.lowerRadiusLimit = 1.2;
     this.camera.upperRadiusLimit = 9;
     this.camera.lowerBetaLimit = 0.15;
@@ -88,6 +88,7 @@ export class ChaseCamera {
   constructor(scene: Scene, canvas: HTMLCanvasElement) {
     void canvas;
     this.camera = new UniversalCamera("vc-chase", new Vector3(0, 2, -6), scene);
+    scene.activeCamera = this.camera;
     this.dampedPos = this.camera.position.clone();
     this.camera.attachControl(false);
     this.camera.minZ = 0.1;

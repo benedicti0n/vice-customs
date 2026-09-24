@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Matrix } from "@babylonjs/core/Maths/math.vector";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
+import "@babylonjs/core/Culling/ray";
 import { Undo2, Redo2, Brush, Sticker, MousePointer2 } from "lucide-react";
 import VehicleStage, { type StageApi } from "@/components/3d/VehicleStage";
 import GameButton from "@/components/ui/GameButton";
@@ -226,7 +227,7 @@ export default function PaintBoothV2() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selectedDecal, history, future, build, undo, redo, pushHistory, commit]);
+  }, [ready, selectedDecal, history, future, build, undo, redo, pushHistory, commit]);
 
   useEffect(() => {
     const api = apiRef.current;
@@ -235,8 +236,6 @@ export default function PaintBoothV2() {
     if (!canvas) return;
     let down = false;
     let strokePts: [number, number][] = [];
-    let lastU = 0;
-    let lastV = 0;
 
     const uvFromPointer = (x: number, y: number) => {
       const pick = api.scene.pick(x, y, (m) => m === api.rig.body);
@@ -261,8 +260,6 @@ export default function PaintBoothV2() {
         down = true;
         drawing.current = true;
         strokePts = [[uv.u * api.livery.width, uv.v * api.livery.height]];
-        lastU = uv.u;
-        lastV = uv.v;
         api.livery.stamp(uv.u, uv.v, brushSizeRef.current, brushColorRef.current, eraserRef.current);
         return;
       }
@@ -305,14 +302,13 @@ export default function PaintBoothV2() {
       if (toolRef.current === "paint" && down && drawing.current) {
         const uv = uvFromPointer(x, y);
         if (!uv) return;
-        if (Math.hypot(uv.u - lastU, uv.v - lastV) > 0.001) {
-          const tx = uv.u * api2.livery.width;
-          const ty = uv.v * api2.livery.height;
-          const prev = strokePts[strokePts.length - 1];
+        const tx = uv.u * api2.livery.width;
+        const ty = uv.v * api2.livery.height;
+        const prev = strokePts[strokePts.length - 1];
+        const delta = Math.hypot(tx - prev[0], ty - prev[1]);
+        if (delta > 1.5) {
           strokePts.push([tx, ty]);
           api2.livery.stampPath([prev, [tx, ty]], brushSizeRef.current, brushColorRef.current, eraserRef.current);
-          lastU = uv.u;
-          lastV = uv.v;
         }
       }
 
@@ -326,7 +322,7 @@ export default function PaintBoothV2() {
     const onUp = () => {
       const api2 = apiRef.current;
       if (!api2) return;
-      if (drawing.current && strokePts.length >= 2) {
+      if (drawing.current && strokePts.length >= 1) {
         api2.livery.strokes.push({ points: strokePts, size: brushSizeRef.current, color: brushColorRef.current, eraser: eraserRef.current });
         pushHistRef.current();
         commitRef.current({ strokes: api2.livery.strokes });

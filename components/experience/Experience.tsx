@@ -44,7 +44,7 @@ function Scenes() {
   const scene = state.scene;
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="sync">
       <motion.div
         key={scene}
         initial={{ opacity: 0 }}

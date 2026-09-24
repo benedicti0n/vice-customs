@@ -78,7 +78,17 @@ export function stopAllLoops() {
   for (const name of Object.keys(loops)) stopLoop(name);
 }
 
-export const sound = {
+function safe(fn: () => void): () => void {
+  return () => {
+    try {
+      fn();
+    } catch {
+      /* audio failure must never break the game flow */
+    }
+  };
+}
+
+const soundImpl = {
   unlock() {
     ensure();
   },
@@ -239,3 +249,7 @@ export const sound = {
     stopLoop("engineSub");
   },
 };
+
+export const sound = Object.fromEntries(
+  Object.entries(soundImpl).map(([k, v]) => [k, safe(v as () => void)])
+) as unknown as typeof soundImpl;

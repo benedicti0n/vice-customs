@@ -212,7 +212,7 @@ export default function FinalBuildCardV2() {
             )}
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <GameButton onClick={() => { sound.select(); setScene("paint-booth"); }}>Customize Again</GameButton>
+              <GameButton onClick={() => { setScene("paint-booth"); sound.select(); }}>Customize Again</GameButton>
               <GameButton variant="secondary" onClick={() => { sound.thump(); newBuild(); }}>New Build</GameButton>
               <GameButton variant="ghost" onClick={saveCard}>
                 <Download className="mr-2 h-4 w-4" /> Save Build Card

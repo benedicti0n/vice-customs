@@ -39,6 +39,7 @@ export function materializeBuild(scene: Scene, build: ViceBuild): MaterializedBu
 
   livery.perimeter = rig.bodyPerimeter;
   livery.carWidth = 1.9;
+  livery.strokes = [...build.livery.strokes];
   livery.redrawAll();
 
   for (const stroke of build.livery.strokes) {

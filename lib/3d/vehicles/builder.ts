@@ -50,6 +50,7 @@ export function buildProceduralVehicle(scene: Scene, spec: ReturnType<typeof get
   hull.parent = root;
   hull.receiveShadows = true;
   hull.metadata = { part: "body" };
+  hull.refreshBoundingInfo(true);
 
   const liveryTexture =
     opts.liveryTexture ?? new DynamicTexture(`vc-livery-${spec.id}`, { width: 2048, height: 256 }, scene, false);
@@ -227,6 +228,7 @@ function buildSleeve(scene: Scene, rings: Vector3[][], name: string): Mesh {
   mesh.setVerticesBuffer(new VertexBuffer(mesh.getEngine(), uvs, VertexBuffer.UVKind, false, false, 2));
   mesh.setIndices(indices);
   mesh.isVisible = true;
+  mesh.refreshBoundingInfo(true);
   return mesh;
 }
 

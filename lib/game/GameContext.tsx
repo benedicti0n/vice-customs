@@ -143,11 +143,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, [state.vehicleId, state.liveryDataUrl, ensureComposite]);
 
   const api = useMemo<GameApi>(() => {
-    const s = stateRef.current;
     return {
       state,
       setScene: (scene) => {
-        if (scene === s.scene) return;
         dispatch({ type: "SCENE", scene });
       },
       selectVehicle: (id) => {
