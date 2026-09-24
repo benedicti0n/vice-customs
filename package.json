@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@babylonjs/core": "^9.28.0",
+    "@babylonjs/loaders": "^9.28.0",
     "@unlayer/react-image-editor": "^1.0.2",
     "framer-motion": "^13.4.2",
     "lucide-react": "^1.48.0",
