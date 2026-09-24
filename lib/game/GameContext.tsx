@@ -7,6 +7,7 @@ import { sound } from "@/lib/sound";
 import { getVehicle } from "@/lib/game/vehicles";
 import { analyzeLivery } from "@/lib/livery/analysis";
 import { composeCarImage } from "@/lib/livery/cache";
+import { loadBuildV2, saveBuildV2 } from "@/lib/game/buildStore";
 
 const initialState: BuildState = {
   scene: "boot",
@@ -16,6 +17,7 @@ const initialState: BuildState = {
   analysis: null,
   buildNumber: 1,
   muted: false,
+  build: null,
 };
 
 function bootstrap(): BuildState {
@@ -30,6 +32,7 @@ type Action =
   | { type: "ANALYSIS"; analysis: BuildState["analysis"] }
   | { type: "BUILD_NUMBER"; n: number }
   | { type: "MUTE" }
+  | { type: "BUILD"; build: BuildState["build"] }
   | { type: "RESET" };
 
 function reducer(state: BuildState, action: Action): BuildState {
@@ -48,6 +51,8 @@ function reducer(state: BuildState, action: Action): BuildState {
       return { ...state, buildNumber: action.n };
     case "MUTE":
       return { ...state, muted: !state.muted };
+    case "BUILD":
+      return { ...state, build: action.build };
     case "RESET":
       return { ...initialState, scene: "garage", buildNumber: nextBuildNumber() };
     default:
@@ -65,6 +70,7 @@ interface GameApi {
   toggleMute: () => void;
   newBuild: () => void;
   ensureComposite: (opts?: { force?: boolean }) => void;
+  updateBuild: (build: BuildState["build"]) => void;
 }
 
 const GameContext = createContext<GameApi | null>(null);
@@ -75,8 +81,15 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     dispatch({ type: "BUILD_NUMBER", n: currentBuildNumber() });
-    const saved = loadLastLivery();
-    if (saved) dispatch({ type: "LIVERY", dataUrl: saved });
+    const savedV2 = loadBuildV2();
+    if (savedV2) {
+      dispatch({ type: "BUILD", build: savedV2 });
+      dispatch({ type: "VEHICLE", id: savedV2.vehicleId });
+      if (savedV2.analysis) dispatch({ type: "ANALYSIS", analysis: savedV2.analysis });
+    } else {
+      const saved = loadLastLivery();
+      if (saved) dispatch({ type: "LIVERY", dataUrl: saved });
+    }
   }, []);
 
   useEffect(() => {
@@ -88,6 +101,17 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       void analyzeLivery(state.liveryDataUrl).then((a) => dispatch({ type: "ANALYSIS", analysis: a }));
     }
   }, [state.liveryDataUrl, state.analysis]);
+
+  useEffect(() => {
+    if (state.build && !state.build.analysis) {
+      void import("@/lib/game/analysisV2").then(({ analyzeBuildV2 }) =>
+        analyzeBuildV2(state.build as NonNullable<BuildState["build"]>).then((a) => {
+          const b = stateRef.current.build;
+          if (b) dispatch({ type: "BUILD", build: { ...b, analysis: a, updatedAt: Date.now() } });
+        })
+      );
+    }
+  }, [state.build?.analysis, state.build?.buildId, state.build]);
 
   useEffect(() => {
     sound.setMuted(state.muted);
@@ -126,7 +150,13 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         if (scene === s.scene) return;
         dispatch({ type: "SCENE", scene });
       },
-      selectVehicle: (id) => dispatch({ type: "VEHICLE", id }),
+      selectVehicle: (id) => {
+        dispatch({ type: "VEHICLE", id });
+        const b = stateRef.current.build;
+        if (b) {
+          dispatch({ type: "BUILD", build: { ...b, vehicleId: id, decals: [], updatedAt: Date.now() } });
+        }
+      },
       applyLivery: (dataUrl) => {
         persistLivery(dataUrl);
         dispatch({ type: "LIVERY", dataUrl });
@@ -134,6 +164,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       },
       setComposite: (url) => dispatch({ type: "COMPOSITE", url }),
       setAnalysis: (a) => dispatch({ type: "ANALYSIS", analysis: a }),
+      updateBuild: (build) => {
+        dispatch({ type: "BUILD", build });
+        if (build) saveBuildV2(build);
+      },
       toggleMute: () => dispatch({ type: "MUTE" }),
       newBuild: () => dispatch({ type: "RESET" }),
       ensureComposite,

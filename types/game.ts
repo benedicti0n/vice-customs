@@ -56,9 +56,11 @@ export interface BuildState {
   vehicleId: VehicleId;
   liveryDataUrl: string | null;
   compositedUrl: string | null;
-  analysis: LiveryAnalysis | null;
+  analysis: import("@/types/build").BuildTelemetry | LiveryAnalysis | null;
   buildNumber: number;
   muted: boolean;
+  /** V2 serializable 3D build (paint, strokes, decals, analysis). */
+  build: import("@/types/build").ViceBuild | null;
 }
 
 export type BuildAction =
