@@ -7,6 +7,11 @@ import BootScene from "@/components/experience/BootScene";
 import GarageScene from "@/components/experience/GarageScene";
 import VehicleSelector from "@/components/experience/VehicleSelector";
 import PaintBooth from "@/components/experience/PaintBooth";
+import PaintBoothV2 from "@/components/experience/PaintBoothV2";
+import RevealSequenceV2 from "@/components/experience/RevealSequenceV2";
+import BuildAnalysisV2 from "@/components/experience/BuildAnalysisV2";
+import StreetRunV2 from "@/components/experience/StreetRunV2";
+import FinalBuildCardV2 from "@/components/experience/FinalBuildCardV2";
 import RevealSequence from "@/components/experience/RevealSequence";
 import BuildAnalysis from "@/components/experience/BuildAnalysis";
 import StreetRun from "@/components/experience/StreetRun";
@@ -32,6 +37,8 @@ function MuteToggle() {
   );
 }
 
+const LEGACY = process.env.NEXT_PUBLIC_VC_V2_UNLAYER === "1";
+
 function Scenes() {
   const { state } = useGame();
   const scene = state.scene;
@@ -49,11 +56,11 @@ function Scenes() {
         {scene === "boot" && <BootScene />}
         {scene === "garage" && <GarageScene />}
         {scene === "vehicle-select" && <VehicleSelector />}
-        {scene === "paint-booth" && <PaintBooth />}
-        {scene === "reveal" && <RevealSequence />}
-        {scene === "analysis" && <BuildAnalysis />}
-        {scene === "street-run" && <StreetRun />}
-        {scene === "complete" && <FinalBuildCard />}
+        {scene === "paint-booth" && (LEGACY ? <PaintBooth /> : <PaintBoothV2 />)}
+        {scene === "reveal" && (LEGACY ? <RevealSequence /> : <RevealSequenceV2 />)}
+        {scene === "analysis" && (LEGACY ? <BuildAnalysis /> : <BuildAnalysisV2 />)}
+        {scene === "street-run" && (LEGACY ? <StreetRun /> : <StreetRunV2 />)}
+        {scene === "complete" && (LEGACY ? <FinalBuildCard /> : <FinalBuildCardV2 />)}
       </motion.div>
     </AnimatePresence>
   );

@@ -63,7 +63,8 @@ export default function StreetRun() {
   const startRef = useRef<number | null>(null);
   const scenery = useMemo(() => buildScenery(), []);
 
-  const heat = state.analysis?.policeHeat ?? 0;
+  const heatRaw = state.analysis;
+  const heat = heatRaw && "policeHeat" in heatRaw ? (heatRaw.policeHeat ?? 0) : 0;
   const heatLevel = heat >= 68 ? "high" : heat >= 38 ? "medium" : "none";
 
   const scannerText = useMemo(() => {

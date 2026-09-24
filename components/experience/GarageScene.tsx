@@ -6,6 +6,8 @@ import GarageBackdrop from "@/components/effects/GarageBackdrop";
 import FilmGrain from "@/components/effects/FilmGrain";
 import Scanlines from "@/components/effects/Scanlines";
 import VehicleRenderer from "@/components/vehicle/VehicleRenderer";
+import VehicleStage from "@/components/3d/VehicleStage";
+import { useBuild } from "@/lib/game/useBuild";
 import GameButton from "@/components/ui/GameButton";
 import HudPanel from "@/components/ui/HudPanel";
 import RadioSubtitle from "@/components/ui/RadioSubtitle";
@@ -24,7 +26,9 @@ const GARAGE_LINES = [
 
 export default function GarageScene() {
   const { state, setScene } = useGame();
-  const vehicle = getVehicle(state.vehicleId);
+  const build = useBuild();
+  const [stageFailed, setStageFailed] = useState(false);
+  const vehicle = getVehicle(build.vehicleId);
   const [muteLine, setMuteLine] = useState<string | null>(null);
 
   useEffect(() => {
@@ -70,18 +74,24 @@ export default function GarageScene() {
         className="absolute inset-x-0 bottom-[7%] z-10 flex justify-center"
       >
         <div className="relative w-[min(82vw,980px)]">
+          {!stageFailed ? (
+            <div className="h-[min(64vh,600px)] w-full">
+              <VehicleStage build={build} mode="garage" onFail={() => setStageFailed(true)} />
+            </div>
+          ) : (
+            <VehicleRenderer
+              src={state.compositedUrl ?? ""}
+              alt={`${vehicle.name} on the garage floor`}
+              className="h-[min(60vh,560px)] w-full"
+              rumble
+            />
+          )}
           <div
             className="pointer-events-none absolute -inset-10"
             style={{
               background:
                 "radial-gradient(ellipse 50% 38% at 50% 42%, rgba(255,63,142,0.10), transparent 70%)",
             }}
-          />
-          <VehicleRenderer
-            src={state.compositedUrl ?? ""}
-            alt={`${vehicle.name} on the garage floor`}
-            className="h-[min(60vh,560px)] w-full"
-            rumble
           />
           <div
             className="pointer-events-none absolute left-1/2 top-[96%] h-16 w-[64%] -translate-x-1/2"

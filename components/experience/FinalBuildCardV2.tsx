@@ -1,19 +1,32 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Download } from "lucide-react";
 import GarageBackdrop from "@/components/effects/GarageBackdrop";
 import FilmGrain from "@/components/effects/FilmGrain";
 import Scanlines from "@/components/effects/Scanlines";
+import VehicleStage, { type StageApi } from "@/components/3d/VehicleStage";
 import GameButton from "@/components/ui/GameButton";
 import HudPanel from "@/components/ui/HudPanel";
 import CountUp from "@/components/ui/CountUp";
+import { useBuild } from "@/lib/game/useBuild";
 import { useGame } from "@/lib/game/GameContext";
 import { getVehicle } from "@/lib/game/vehicles";
-import { CLASSIFICATIONS } from "@/lib/game/classifications";
 import { padBuild } from "@/lib/game/buildNumber";
 import { sound } from "@/lib/sound";
+
+const CLASS_COLORS: Record<string, string> = {
+  "LOW PROFILE": "#9aa0ad",
+  "NEON OUTLAW": "#ff3f8e",
+  "MIDNIGHT RUNNER": "#39d9e6",
+  "HEAT MAGNET": "#ffa640",
+  "OEM+": "#22ff88",
+  "STREET SPEC": "#39d9e6",
+  "SHOW CAR": "#ff3f8e",
+  "GHOST BUILD": "#8ea3bf",
+  "VICE ICON": "#ff3f8e",
+};
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -24,12 +37,12 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-export default function FinalBuildCard() {
-  const { state, setScene, newBuild } = useGame();
-  const vehicle = getVehicle(state.vehicleId);
-  const analysisRaw = state.analysis;
-  const analysis = analysisRaw && "personality" in analysisRaw ? analysisRaw : null;
-  const cls = analysis ? CLASSIFICATIONS[analysis.personality] : null;
+export default function FinalBuildCardV2() {
+  const { setScene, newBuild } = useGame();
+  const build = useBuild();
+  const vehicle = getVehicle(build.vehicleId);
+  const stageRef = useRef<StageApi | null>(null);
+  const telemetry = build.analysis;
 
   useEffect(() => {
     sound.engineLoop(0.4);
@@ -37,20 +50,23 @@ export default function FinalBuildCard() {
   }, []);
 
   const saveCard = useCallback(async () => {
-    if (!state.compositedUrl) return;
+    if (!stageRef.current) return;
     sound.click();
-    const car = await loadImage(state.compositedUrl);
+    const snapshot = stageRef.current.snapshotDataUrl();
+    const car = snapshot ? await loadImage(snapshot).catch(() => null) : null;
+
     const W = 1200;
     const H = 720;
     const canvas = document.createElement("canvas");
     canvas.width = W;
     canvas.height = H;
-    const ctx = canvas.getContext("2d")!;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     const bg = ctx.createLinearGradient(0, 0, 0, H);
     bg.addColorStop(0, "#0a0c12");
     bg.addColorStop(0.6, "#0d0f16");
-    bg.addColorStop(1, "#07080c");
+    bg.addColorStop(1, "#050609");
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
@@ -62,62 +78,63 @@ export default function FinalBuildCard() {
     ctx.font = '600 26px "JetBrains Mono", monospace';
     ctx.textAlign = "left";
     ctx.fillText("VICE//CUSTOMS", 44, 74);
-    ctx.fillStyle = "rgba(139,147,166,0.8)";
+    ctx.fillStyle = "rgba(154,160,173,0.8)";
     ctx.font = '500 18px "JetBrains Mono", monospace';
-    ctx.fillText(`BUILD #${padBuild(state.buildNumber)}`, W - 44, 74);
+    ctx.fillText(`BUILD #${padBuild(build.buildId)}`, W - 44, 74);
 
     ctx.textAlign = "right";
     ctx.font = '600 26px "Archivo Black", sans-serif';
-    ctx.fillStyle = "#e9edf5";
+    ctx.fillStyle = "#ede9df";
     ctx.fillText(vehicle.name, W - 44, 132);
     ctx.font = '500 16px "JetBrains Mono", monospace';
-    ctx.fillStyle = "rgba(139,147,166,0.9)";
+    ctx.fillStyle = "rgba(154,160,173,0.9)";
     ctx.fillText(vehicle.tagline, W - 44, 158);
 
-    const carW = Math.min(980, W - 120);
-    const carH = carW * (720 / 980);
-    const carY = 210;
-    ctx.drawImage(car, (W - carW) / 2, carY, carW, carH);
+    if (car) {
+      const carW = Math.min(760, W - 240);
+      const carH = (carW * car.naturalHeight) / car.naturalWidth;
+      ctx.drawImage(car, (W - carW) / 2, 200, carW, carH);
+      const grad = ctx.createLinearGradient(0, 200 + carH - 60, 0, 200 + carH + 30);
+      grad.addColorStop(0, "rgba(5,6,9,0)");
+      grad.addColorStop(1, "rgba(5,6,9,1)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 200 + carH - 60, W, 90);
+    }
 
-    const grad = ctx.createLinearGradient(0, carY + carH - 80, 0, carY + carH + 40);
-    grad.addColorStop(0, "rgba(7,8,12,0)");
-    grad.addColorStop(1, "rgba(7,8,12,1)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, carY + carH - 80, W, 120);
-
-    if (analysis && cls) {
+    if (telemetry) {
       const stats: [string, number, string][] = [
-        ["STYLE", analysis.styleScore, "#39d9e6"],
-        ["STREET REP", analysis.streetRep, "#39d9e6"],
-        ["HEAT", analysis.policeHeat, "#ff3f8e"],
+        ["STYLE", telemetry.style, "#39d9e6"],
+        ["STREET REP", telemetry.streetRep, "#39d9e6"],
+        ["HEAT", telemetry.policeHeat, "#ff3f8e"],
       ];
       ctx.textAlign = "left";
       stats.forEach(([label, value, color], i) => {
         const x = 90 + i * 240;
-        ctx.fillStyle = "rgba(139,147,166,0.8)";
+        ctx.fillStyle = "rgba(154,160,173,0.8)";
         ctx.font = '500 15px "JetBrains Mono", monospace';
         ctx.fillText(label, x, H - 96);
         ctx.fillStyle = color;
         ctx.font = '600 42px "Archivo Black", sans-serif';
         ctx.fillText(String(value), x, H - 52);
       });
-
       ctx.textAlign = "right";
-      ctx.fillStyle = cls.color;
+      ctx.fillStyle = CLASS_COLORS[telemetry.classification] ?? "#9aa0ad";
       ctx.font = '600 20px "JetBrains Mono", monospace';
-      ctx.fillText(cls.key.toUpperCase(), W - 44, H - 52);
+      ctx.fillText(telemetry.classification.toUpperCase(), W - 44, H - 52);
     }
 
-    ctx.fillStyle = "rgba(139,147,166,0.6)";
+    ctx.fillStyle = "rgba(154,160,173,0.6)";
     ctx.font = '500 15px "JetBrains Mono", monospace';
     ctx.textAlign = "center";
     ctx.fillText("OCEAN DISTRICT — VICE COAST", W / 2, H - 26);
 
     const a = document.createElement("a");
     a.href = canvas.toDataURL("image/png");
-    a.download = `vice-customs-build-${padBuild(state.buildNumber)}.png`;
+    a.download = `vice-customs-build-${padBuild(build.buildId)}.png`;
     a.click();
-  }, [state.buildNumber, state.compositedUrl, vehicle, analysis, cls]);
+  }, [build, telemetry, vehicle]);
+
+  const clsColor = telemetry ? CLASS_COLORS[telemetry.classification] ?? "#9aa0ad" : "#9aa0ad";
 
   return (
     <div className="relative h-full w-full overflow-hidden">
@@ -131,7 +148,7 @@ export default function FinalBuildCard() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          <HudPanel className="relative w-[min(92vw,840px)] px-8 py-6">
+          <HudPanel className="relative w-[min(94vw,880px)] px-8 py-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-display text-2xl tracking-[0.1em] text-ink">
@@ -140,7 +157,7 @@ export default function FinalBuildCard() {
                   <span className="text-cyan text-glow-cyan">CUSTOMS</span>
                 </p>
                 <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.3em] text-ink-dim">
-                  Build #{padBuild(state.buildNumber)}
+                  Build #{padBuild(build.buildId)}
                 </p>
               </div>
               <div className="text-right">
@@ -149,56 +166,43 @@ export default function FinalBuildCard() {
               </div>
             </div>
 
-            <div className="relative mt-4 flex justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={state.compositedUrl ?? ""}
-                alt={`${vehicle.name} final build`}
-                className="h-[min(44vh,420px)] w-full object-contain"
-                draggable={false}
-              />
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
-                style={{
-                  background:
-                    "radial-gradient(ellipse at 50% 100%, rgba(255,63,142,0.16), transparent 62%)",
+            <div className="relative mt-4 flex h-[min(38vh,340px)] justify-center">
+              <VehicleStage
+                build={build}
+                mode="card"
+                onReady={(api) => {
+                  stageRef.current = api;
                 }}
               />
+              <p className="pointer-events-none absolute bottom-1 z-10 font-mono text-[9px] uppercase tracking-[0.35em] text-ink-faint">
+                Drag to rotate
+              </p>
             </div>
 
             <div className="mt-2 flex items-baseline justify-between">
               <div>
                 <h2 className="font-display text-3xl uppercase tracking-[0.08em] text-ink">{vehicle.name}</h2>
-                <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.3em] text-ink-dim">
-                  {vehicle.tagline}
-                </p>
+                <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.3em] text-ink-dim">{vehicle.tagline}</p>
               </div>
-              {cls && (
-                <p
-                  className="font-display text-2xl uppercase tracking-[0.1em]"
-                  style={{ color: cls.color, textShadow: `0 0 22px ${cls.color}66` }}
-                >
-                  {cls.key}
+              {telemetry && (
+                <p className="font-display text-2xl uppercase tracking-[0.1em]" style={{ color: clsColor, textShadow: `0 0 22px ${clsColor}66` }}>
+                  {telemetry.classification}
                 </p>
               )}
             </div>
 
-            {analysis && (
+            {telemetry && (
               <div className="mt-5 grid grid-cols-3 gap-3 border-t border-white/10 pt-5">
                 {(
                   [
-                    ["Style", analysis.styleScore, "#39d9e6"],
-                    ["Street Rep", analysis.streetRep, "#39d9e6"],
-                    ["Heat", analysis.policeHeat, "#ff3f8e"],
+                    ["Style", telemetry.style, "#39d9e6"],
+                    ["Street Rep", telemetry.streetRep, "#39d9e6"],
+                    ["Heat", telemetry.policeHeat, "#ff3f8e"],
                   ] as const
                 ).map(([label, value, color]) => (
                   <div key={label} className="text-center">
                     <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-ink-faint">{label}</p>
-                    <CountUp
-                      value={value}
-                      className="mt-1 inline-block font-display text-4xl leading-none"
-                    />
+                    <CountUp value={value} className="mt-1 inline-block font-display text-4xl leading-none" />
                     <div className="mx-auto mt-1 h-1 w-16" style={{ background: `${color}55` }}>
                       <div className="h-full" style={{ width: `${value}%`, background: color }} />
                     </div>
@@ -208,23 +212,8 @@ export default function FinalBuildCard() {
             )}
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <GameButton
-                onClick={() => {
-                  sound.select();
-                  setScene("paint-booth");
-                }}
-              >
-                Customize Again
-              </GameButton>
-              <GameButton
-                variant="secondary"
-                onClick={() => {
-                  sound.thump();
-                  newBuild();
-                }}
-              >
-                New Build
-              </GameButton>
+              <GameButton onClick={() => { sound.select(); setScene("paint-booth"); }}>Customize Again</GameButton>
+              <GameButton variant="secondary" onClick={() => { sound.thump(); newBuild(); }}>New Build</GameButton>
               <GameButton variant="ghost" onClick={saveCard}>
                 <Download className="mr-2 h-4 w-4" /> Save Build Card
               </GameButton>

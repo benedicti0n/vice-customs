@@ -40,13 +40,14 @@ export default function BuildAnalysis() {
   const { state, setScene } = useGame();
   const vehicle = getVehicle(state.vehicleId);
   const analysis = state.analysis;
+  const analysisV1 = analysis && "personality" in analysis ? analysis : null;
   const [line, setLine] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!analysis) return;
+    if (!analysisV1) return;
     sound.engineLoop(0.35);
     const t = window.setTimeout(() => {
-      setLine(pickLine(analysis.personality, state.buildNumber));
+      setLine(pickLine(analysisV1.personality, state.buildNumber));
       sound.scanner();
     }, 1300);
     return () => {
@@ -54,13 +55,13 @@ export default function BuildAnalysis() {
       sound.engineOff();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [analysis?.personality, state.buildNumber]);
+  }, [analysisV1?.personality, state.buildNumber]);
 
   const cls = useMemo(() => {
-    return analysis ? CLASSIFICATIONS[analysis.personality] : null;
-  }, [analysis]);
+    return analysisV1 ? CLASSIFICATIONS[analysisV1.personality] : null;
+  }, [analysisV1]);
 
-  if (!analysis || !cls) {
+  if (!analysisV1 || !cls) {
     return (
       <div className="relative flex h-full w-full items-center justify-center bg-black">
         <p className="pulse-slow font-mono text-xs uppercase tracking-[0.4em] text-ink-dim">
@@ -70,7 +71,7 @@ export default function BuildAnalysis() {
     );
   }
 
-  const heatStars = Math.max(1, Math.min(5, Math.round((analysis.policeHeat / 100) * 5)));
+  const heatStars = analysisV1 ? Math.max(1, Math.min(5, Math.round((analysisV1.policeHeat / 100) * 5))) : 1;
 
   return (
     <div className="relative h-full w-full overflow-hidden">
@@ -117,10 +118,10 @@ export default function BuildAnalysis() {
           </motion.div>
 
           <div className="mt-3">
-            <StatRow label="Style" value={analysis.styleScore} accent="#39d9e6" delay={0.1} />
-            <StatRow label="Street Rep" value={analysis.streetRep} accent="#39d9e6" delay={0.3} />
-            <StatRow label="Subtlety" value={analysis.subtlety} accent="#9aa0ad" delay={0.5} />
-            <StatRow label="Police Heat" value={analysis.policeHeat} accent="#ff3f8e" delay={0.7} />
+            <StatRow label="Style" value={analysisV1.styleScore} accent="#39d9e6" delay={0.1} />
+            <StatRow label="Street Rep" value={analysisV1.streetRep} accent="#39d9e6" delay={0.3} />
+            <StatRow label="Subtlety" value={analysisV1.subtlety} accent="#9aa0ad" delay={0.5} />
+            <StatRow label="Police Heat" value={analysisV1.policeHeat} accent="#ff3f8e" delay={0.7} />
           </div>
 
           <div className="mt-5 flex items-center justify-between">

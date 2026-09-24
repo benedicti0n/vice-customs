@@ -6,31 +6,26 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import GarageBackdrop from "@/components/effects/GarageBackdrop";
 import FilmGrain from "@/components/effects/FilmGrain";
 import Scanlines from "@/components/effects/Scanlines";
-import VehicleRenderer from "@/components/vehicle/VehicleRenderer";
+import VehicleStage from "@/components/3d/VehicleStage";
 import GameButton from "@/components/ui/GameButton";
 import HudPanel from "@/components/ui/HudPanel";
 import StatBar from "@/components/ui/StatBar";
 import { useGame } from "@/lib/game/GameContext";
 import { VEHICLES } from "@/lib/game/vehicles";
+import { useBuild } from "@/lib/game/useBuild";
 import { sound } from "@/lib/sound";
-import { composeCarImage } from "@/lib/livery/cache";
 
 export default function VehicleSelector() {
-  const { state, selectVehicle, setScene, setComposite } = useGame();
-  const [index, setIndex] = useState(() => Math.max(0, VEHICLES.findIndex((v) => v.id === state.vehicleId)));
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const { selectVehicle, setScene, updateBuild } = useGame();
+  const build = useBuild();
+  const [index, setIndex] = useState(() => Math.max(0, VEHICLES.findIndex((v) => v.id === build.vehicleId)));
 
   const vehicle = VEHICLES[index];
-
-  useEffect(() => {
-    let alive = true;
-    void composeCarImage(vehicle, null).then((url) => {
-      if (alive) setPreviewUrl(url);
-    });
-    return () => {
-      alive = false;
-    };
-  }, [vehicle]);
+  const previewBuild = {
+    ...build,
+    vehicleId: vehicle.id,
+    decals: [],
+  };
 
   const move = (dir: number) => {
     sound.click();
@@ -40,7 +35,7 @@ export default function VehicleSelector() {
   const select = () => {
     sound.select();
     selectVehicle(vehicle.id);
-    void composeCarImage(vehicle, state.liveryDataUrl).then(setComposite);
+    updateBuild({ ...build, vehicleId: vehicle.id, decals: [], updatedAt: Date.now() });
     setScene("paint-booth");
   };
 
@@ -113,7 +108,7 @@ export default function VehicleSelector() {
         </HudPanel>
       </div>
 
-      <div className="absolute inset-y-0 right-[6%] z-10 flex w-[52%] items-center justify-center">
+      <div className="absolute inset-y-0 right-[4%] z-10 flex w-[52%] items-center justify-center">
         <AnimatePresence mode="popLayout">
           <motion.div
             key={vehicle.id}
@@ -121,9 +116,9 @@ export default function VehicleSelector() {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: -40, scale: 0.96 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full"
+            className="h-[56vh] w-full"
           >
-            <VehicleRenderer src={previewUrl ?? ""} alt={`${vehicle.name} preview`} className="h-[52vh] w-full" rumble />
+            <VehicleStage build={previewBuild} mode="garage" />
           </motion.div>
         </AnimatePresence>
       </div>
