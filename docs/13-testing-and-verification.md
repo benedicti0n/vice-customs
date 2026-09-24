@@ -37,6 +37,16 @@ The same harness listens for `console.error` and `pageerror` across the whole ru
 
 `scripts/audit.mjs` walks every scene, screenshots it, and (used with the ASCII renderers) lets a reviewer inspect the actual pixels: boot, garage, selector, editor, reveal (early + late), analysis, street, complete.
 
+## Screenshot Capture
+
+`scripts/screenshot.ts` (Playwright, `channel: "chrome"`) captures all 12 key frames into `screenshots/` for human review: boot, garage, all three vehicle previews, the paint booth (blank + with a drawn design), reveal (applying + revealed), analysis, street run, and the final build card. A `screenshots/README.md` maps each file to its scene. The folder is generated output and gitignored.
+
+```bash
+npx tsx scripts/screenshot.ts
+```
+
+Requires Playwright (`npm install`) and Chrome at the default macOS path.
+
 ## Deterministic Analysis Test
 
 `scripts/test-analysis.ts` (runs the real `analyzeLivery` against generated canvases) verifies:
