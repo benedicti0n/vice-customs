@@ -115,6 +115,7 @@ export default function StreetRunV2() {
           const elapsed = now - started;
           if (elapsed > DURATION) {
             setFrozen(true);
+            handle.engine.stopRenderLoop();
             sound.engineOff();
             sound.stop("road");
             sound.stop("wind");
