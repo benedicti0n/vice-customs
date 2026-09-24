@@ -1,5 +1,7 @@
 # 08 — Unlayer Integration
 
+> **V2 status:** the V2 paint booth replaces Unlayer as the primary editor. The Unlayer booth remains fully implemented and is reachable with `NEXT_PUBLIC_VC_V2_UNLAYER=1` (legacy flag). V1 saved livery images migrate into V2 builds (see [12 — State & Persistence](./12-state-and-persistence.md)).
+
 The paint booth runs the official [`@unlayer/react-image-editor`](https://github.com/unlayer/react-image-editor) wrapper (v1.x).
 
 ## Initialization

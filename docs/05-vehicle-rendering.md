@@ -1,114 +1,56 @@
-# 05 — Vehicle Rendering
+# 05 — Vehicle Rendering (V2)
 
-## Why 2D (Not Three.js)
+## Why 3D Now
 
-The vehicle is rendered as **layered 2D canvas art** for four reasons:
-
-1. **Reliability** — a deterministic canvas pipeline cannot be broken by GPU/WebGL quirks on a judge's machine.
-2. **Livery compositing** — clipping the user's artwork to a body mask is trivial and robust with Canvas 2D `clip()` / `globalCompositeOperation`, and the same art is reused for the build-card PNG.
-3. **Performance** — no WebGL context, no shader compile, no texture budget; the composite is produced once per (vehicle, livery) pair and cached.
-4. **Scope discipline** — the brief explicitly deferred 3D until the core experience is stable.
-
-The illusion of volume is achieved with paint gradients, curvature shading, specular streaks, and rim light — not polygons.
+V2 replaces the V1 2D canvas presentation with a **real-time Babylon.js 3D vehicle** while keeping the recognizable side-profile silhouette (the 3D hull is lofted from the same parametric profile geometry that defined V1).
 
 ## Geometry Generation
 
-`lib/vehicle/geometry.ts` defines a parametric side-profile builder. Each vehicle is described by a `ProfileParams` set (wheelbase, overhangs, wheel/arch radii, beltline, roof, cowl, tail…), and `buildProfile()` emits:
+`lib/3d/vehicles/profile.ts` parses the V1 SVG path data (`M/L/C/A/Z` subset) and samples the body and window loops into point sets. `builder.ts` maps them to 3D (canvas X → world Z forward, canvas Y → world Y up, car ~4.55 m long):
 
-| Path | Description |
-|------|-------------|
-| `body` | Full silhouette including wheel-arch cutouts (single closed path) |
-| `windows` | Glass panes clipped between beltline and roof |
-| `mirror` | Side mirror silhouette |
-| `liveryRegion` | Quadrilateral where body graphics are placed (door → front fender) |
-| `fenderFront` / `fenderRear` | Wheel-arch flare lines |
-| `doorLine` | Door seam curve |
-| `hoodVent` | Hood vent shape |
-| `rockerAccent` | Lower-body accent strip |
+1. **Body hull** — a closed ribbon "sleeve": 9 copies of the body loop, spread across the width axis, each scaled toward the centroid by `1 - (1-0.86)·(|2x/w|)²`. The result is an elliptical cross-section car with the exact V1 side profile.
+2. **UV mapping** — `u` = perimeter fraction (0..1 around the loop), `v` = width fraction. The door/fender region is a contiguous `u`-range; painting at a picked point writes into the livery texture at `(u·texW, v·texH)`.
+3. **Glass** — two flat double-sided sheets from the window loop, offset just outside the hull sides.
+4. **Wheels** — tire/rim/hub/spokes built per wheel; each wheel is a steerable/spinning transform node.
+5. **Details** — grill, splitter, diffuser, twin exhausts, mirrors, spoiler, emissive headlight/taillight boxes.
 
-Three vehicles share the builder with distinct parameters:
+## Materials (PBR)
 
-| Vehicle | Identity | Parameters |
-|---------|----------|------------|
-| **SERAPH R** | Japanese tuner coupe | short overhangs, high beltline, big cabin |
-| **TEMPEST VX** | European super coupe | longer wheelbase, low roof, cab-rearward |
-| **MARLIN 88** | American muscle sport | long hood, upright glass, bigger arches/wheels |
+`lib/3d/vehicles/materials.ts`:
 
-Paint per vehicle is defined in `lib/game/vehicles.ts` (`base`, `shade`, `accent`, `glass`).
+| Material | Properties |
+|----------|-----------|
+| Paint | metallic 0.62, roughness 0.28, clearcoat 1.0, albedo = livery texture |
+| Glass | alpha 0.32, roughness 0.06 |
+| Chrome | metallic 1, roughness 0.1 |
+| Rubber | metallic 0, roughness 0.92 |
+| Light lens | emissive, used for headlights |
+| Tail lens | red emissive |
 
 ## Render Order
 
-The compositor (`lib/livery/compositor.ts`, `compositeVehicle()`) draws in this order:
-
 ```text
-ground shadow
+ground contact shadows (scene compositor side is replaced by real shadows)
 ↓
-base body
+body hull (paint + livery texture)
 ↓
-base paint
+flat side glass
 ↓
-custom livery          (only when a livery exists)
+wheels (spin/steer per frame)
 ↓
-body curvature          (on the livery region)
+grill / splitter / diffuser / exhausts / mirrors / spoiler
 ↓
-lower-body occlusion
+headlights / taillights (emissive)
 ↓
-wheel-arch shadows
+lighting: key spot + cyan/magenta neon + hemi + fills
 ↓
-windows/details
-↓
-wheels
-↓
-specular reflections
-↓
-garage rim lighting
-↓
-(floor reflection is applied by scenes, not the compositor)
+shadow map (quality-gated)
 ```
 
-## Layer Detail
+## Lighting
 
-### Ground shadow
-Broad radial ellipse under the car plus a tighter **contact shadow** under each wheel — the tires visibly touch the floor.
+Garage/booth scenes use: a key spot from above, pink point (left), cyan point (right), a hemisphere light for base lift, and front/back fills so PBR metallic paint stays readable. The reveal mode dims the rig and ramps it back up during the sequence.
 
-### Body paint
-- 6-stop vertical gradient (bright beltline → base → dark rocker)
-- horizontal side shading (dark fenders → open door)
-- radial sheen on the upper door
-- **metallic noise** — a tiled 128×128 random texture drawn with `globalCompositeOperation: overlay` at 5.5% alpha
-- accent rocker strip with trim hairlines
+## Vehicle Asset Contract
 
-### Livery
-Clipped to `body` ∩ `liveryRegion`, transformed to the door region, then shaded. See [06 — Livery System](./06-livery-system.md).
-
-### Lower-body occlusion
-A vertical dark gradient at the rocker to fake curvature + ambient occlusion.
-
-### Wheel-arch shadows
-Radial dark gradients centered on each axle, clipped to the body, drawn *under* the wheels so the arch reads as a recessed well.
-
-### Windows
-Dark glass gradient, a horizon reflection band, a diagonal streak, a faint pink neon band at the base, a B-pillar, and a chrome frame stroke.
-
-### Details
-Door seam + highlight, door handle, fuel cap, hood vent, fender flare strokes, front splitter, rear diffuser, twin chrome exhausts, grill with slats.
-
-### Headlights / taillights
-Headlight: gradient lens + projector dot + soft glow. Taillight: red lens strip + white highlight + glow. These read as lit even in the stock composite.
-
-### Wheels
-Per wheel (`drawWheel`): radial tire gradient with top highlight, dark barrel, drilled brake disc, 7 metallic spokes with edge lines, hub with accent, brake caliper with highlight, rim lip ring.
-
-### Specular reflections (`drawGloss`)
-Beltline highlight stroke, door S-curve specular, roof highlight, a horizontal white band, neon floor reflection (pink→cyan), a cyan edge on the nose, and a screen-blend rim light over the whole silhouette.
-
-## Scene Usage
-
-`components/vehicle/VehicleRenderer.tsx` renders the composited PNG (`object-contain`). Scenes size it large and center it:
-- Garage: `min(60vh, 560px)` tall with a mirrored floor glow
-- Selector / Analysis / Final Card: similar hero treatment
-- Street run: `min(44vh, 440px)` over the road
-
-## Why It Reads as a Car
-
-The combination that sells the illusion: a believable silhouette, wheels that meet the ground, a lit-from-above paint finish, recessed wheel arches, glass reflections, and neon floor reflections that tie the car to its environment.
+`VehicleDefinition` in `rig.ts` documents the mesh-name-agnostic contract for future production GLBs (`modelUrl`, `bodyMeshes`, `glassMeshes`, `wheelNodes`, `lightNodes`, `paintMaterialSlots`, `cameraTargets`). The procedural builder currently produces the development vehicles behind that contract; a GLB loader can be swapped in without touching gameplay.

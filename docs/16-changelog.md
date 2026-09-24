@@ -2,7 +2,30 @@
 
 ## Unreleased
 
-- Documentation system (`/docs`) added.
+- V2 3D customization experience in development (see below).
+
+## 2.0.0
+
+### Added
+
+- Babylon.js 3D engine with WebGPU-first, WebGL-fallback rendering (`lib/3d/engine.ts`)
+- Procedural 3D vehicle rigs built from the V1 profile geometry (PBR paint with clearcoat, glass, chrome, rubber, emissive lights, spinning/steering wheels)
+- 3D garage environment (bay platform, hazard strips, neon strips, VICE//CUSTOMS sign, dust particles, reflection probe)
+- V2 paint booth: live body painting (brush + eraser on a canvas-backed livery texture), projected decals with 14 presets, tints, five material presets, move/rotate/scale/duplicate/delete/opacity, undo/redo, body paint colors
+- 3D reveal sequence (matte→gloss material sweep, light ramp) with the original SURFACE PREP / INK ARRAY / CLEAR COAT / CURING copy
+- 3D arcade street run: instanced night city, chase camera, keyboard driving (WASD + Shift), wheel spin/steer, body roll, speed HUD, heat-reactive scanner + siren
+- Deterministic V2 build telemetry (coverage, decal counts, symmetry, palette) and nine documented classifications
+- Interactive 3D turntable on the final build card with PNG export rendered from the 3D frame
+- Versioned `ViceBuild` schema (v2) with V1 save migration
+- V2 Playwright capture flow (`scripts/screenshot-v2.ts`)
+
+### Fixed
+
+- Babylon v8 API differences (attachControl signatures, InstancedMesh side-effect import, clearcoat assignment)
+
+### Notes
+
+- The Unlayer booth is preserved behind `NEXT_PUBLIC_VC_V2_UNLAYER=1` during migration.
 
 ## 1.0.0
 

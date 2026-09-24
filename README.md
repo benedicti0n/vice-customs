@@ -2,7 +2,7 @@
 
 **Custom vehicle operations — Ocean District, Vice Coast.**
 
-VICE//CUSTOMS is an original GTA VI-inspired interactive experience that turns the **Unlayer React Image Editor into an in-world vehicle paint system**. You walk into a garage, pick a fictional ride, design a livery inside the shop's own paint array, and watch your exact artwork get applied to the bodywork — then the machine analyzes your design and the streets react to it.
+VICE//CUSTOMS is an original GTA VI-inspired interactive experience that turns **vehicle customization itself** into the game mechanic — paint and place graphics directly on a real-time 3D car, then drive the exact build you created. You walk into a garage, pick a fictional ride, design a livery inside the shop's own paint array, and watch your exact artwork get applied to the bodywork — then the machine analyzes your design and the streets react to it.
 
 > VICE//CUSTOMS is an original fan-made interactive experience created for the Unlayer "Build with React Image Editor" challenge. It is not affiliated with or endorsed by Rockstar Games.
 
@@ -16,7 +16,7 @@ The image editor doesn't sit next to the game — **it is part of the game world
 CREATE → APPLY → ANALYZE → DRIVE
 ```
 
-1. **Create** — enter the paint booth; the Unlayer editor loads on a real body-graphics template (draw, text, shapes, stickers, filters).
+1. **Create** — enter the V2 paint booth; orbit the real-time 3D car and paint / place decals directly on the body (the original Unlayer booth is preserved behind a legacy flag).
 2. **Apply** — on save, the garage performs a cinematic reveal sequence and your exported design is composited onto the vehicle body via a canvas livery pipeline (body-mask clipping, perspective-approximating transform, curvature shading, gloss overlays).
 3. **Analyze** — the exported image is downsampled and analyzed client-side (saturation, brightness, contrast, edge complexity, colorfulness, dominant hue) to produce deterministic build stats and a classification: *Ghost Spec, Street Clean, Vice Classic, Heat Magnet, Full Chaos*.
 4. **Drive** — a short cinematic street sequence renders the customized car. The classification shapes the world: low-heat builds cruise in silence, high-heat builds draw police-light reflections and a live scanner feed.
@@ -49,8 +49,9 @@ Detailed technical documentation lives in [`/docs`](./docs/00-index.md).
 - React 19 + TypeScript
 - Tailwind CSS v4
 - Framer Motion (scene transitions, reveal, stat counters)
-- [`@unlayer/react-image-editor`](https://github.com/unlayer/react-image-editor) — the paint array itself
-- HTML Canvas 2D — vehicle compositor, street environment, build-card export, pixel analysis
+- [`@unlayer/react-image-editor`](https://github.com/unlayer/react-image-editor) — legacy paint array (flag-gated)
+- [Babylon.js](https://www.babylonjs.com/) — WebGPU/WebGL 3D vehicles, garage, paint booth, street run, turntable
+- HTML Canvas 2D — livery textures, decal art, build-card export, pixel analysis
 - Web Audio API — synthesized UI/garage/street sounds (no audio files)
 
 Everything runs client-side. No backend, no database, no accounts, no payments. An Unlayer `projectId` is **optional** — it is only required for Unlayer's AI features, which this project does not use.

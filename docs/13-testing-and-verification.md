@@ -37,6 +37,18 @@ The same harness listens for `console.error` and `pageerror` across the whole ru
 
 `scripts/audit.mjs` walks every scene, screenshots it, and (used with the ASCII renderers) lets a reviewer inspect the actual pixels: boot, garage, selector, editor, reveal (early + late), analysis, street, complete.
 
+## V2 Capture Flow
+
+`scripts/screenshot-v2.ts` drives the real V2 journey headlessly (Playwright, Chrome, 1600×900):
+
+```text
+01 boot → 02 3D garage → 03/04 selector (platforms) → 05 booth painted
+→ 06 booth decals → 07 reveal applying → 08 reveal car
+→ 09 analysis → 10 street run (drives with W/A) → 11 build card
+```
+
+It draws real brush strokes, places decals by pointer events, applies the livery, and reports every console/page error. The V2 flow captures with **zero console errors**.
+
 ## Screenshot Capture
 
 `scripts/screenshot.ts` (Playwright, `channel: "chrome"`) captures all 12 key frames into `screenshots/` for human review: boot, garage, all three vehicle previews, the paint booth (blank + with a drawn design), reveal (applying + revealed), analysis, street run, and the final build card. A `screenshots/README.md` maps each file to its scene. The folder is generated output and gitignored.

@@ -29,6 +29,12 @@ None
 
 There are no required environment variables.
 
+## V2 Runtime Notes
+
+- The 3D scenes use Babylon.js with **WebGPU when the browser supports it** and WebGL otherwise; both paths render the identical experience.
+- Scenes, materials, particles and decals are disposed on scene exit; no GPU resources leak across scenes.
+- Quality auto-detects LOW / MEDIUM / HIGH (shadow resolution, reflections, particles, livery resolution).
+
 ## Runtime Network Dependency
 
 The app itself is self-contained except for the paint booth:

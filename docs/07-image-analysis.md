@@ -57,6 +57,29 @@ Classification copy + mechanic lines live in `lib/game/classifications.ts`.
 - `heat ≥ 38` → **medium**: modified-vehicle scanner advisory
 - otherwise → **low**: `NO ACTIVE ALERTS`
 
+## V2: Build Telemetry (decals + classification)
+
+`lib/game/analysisV2.ts` runs when a build is applied or loaded:
+
+1. Re-renders the serialized strokes to a canvas (deterministic — no scene needed).
+2. Reuses the V1 `analyzeLivery` pixel analysis for the four core scores.
+3. Adds decal telemetry: coverage, decal count, emissive coverage, reflectivity, symmetry (left/right mirroring), palette complexity.
+4. Applies a documented, deterministic classification table:
+
+| Rule | Classification |
+|------|---------------|
+| heat ≥ 78 or (emissive ≥ 50% and coverage ≥ 40%) | **HEAT MAGNET** |
+| style ≥ 72 and ≥ 6 decals and coverage ≥ 35% | **SHOW CAR** |
+| emissive ≥ 25% and saturation ≥ 0.45 | **NEON OUTLAW** |
+| subtlety ≥ 72, ≤ 1 decal, saturation ≤ 0.28 | **GHOST BUILD** |
+| dark + blue hue + ≤ 3 decals | **MIDNIGHT RUNNER** |
+| rep ≥ 66 and ≥ 3 decals | **STREET SPEC** |
+| no decals, near-zero saturation | **OEM+** |
+| vice-range hue with real saturation | **VICE ICON** |
+| otherwise | **LOW PROFILE** |
+
+Each classification carries short diegetic diagnostics (e.g. `HIGH CONTRAST / LARGE BODY COVERAGE`), capped at three per build.
+
 ## Verified Examples
 
 From the deterministic analysis tests (`scripts/test-analysis.ts`):

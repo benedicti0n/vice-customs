@@ -54,6 +54,28 @@ On boot, `GameContext` restores both and recomputes analysis/composite from the 
 - `vehicleId` — defaults to SERAPH R each session
 - `muted` — in-memory only (deliberately not persisted)
 
+## V2 Build Schema & Migration
+
+`types/build.ts` defines the versioned `ViceBuild`:
+
+```text
+version: 2
+buildId, vehicleId
+paint { color, metallic, roughness, clearcoat }
+livery { strokes[], legacyImage? }
+decals[] { assetId, position, rotation, scale, opacity, tint, material, layer }
+analysis { style, rep, subtlety, heat, coverage, decalCount, emissive, reflectivity, symmetry, palette, hue, classification, diagnostics }
+createdAt / updatedAt
+```
+
+Stored under `vc-build-v2`. `migrateToV2()` handles:
+
+- **v2 saves** → validated/repaired defaults
+- **v1 saves** (`vc-last-livery` raster) → new build with `legacyImage` set (preserved artwork)
+- Missing fields → sensible defaults; the analysis is recomputed deterministically
+
+The `GameContext` loads the v2 build on boot, persists it on every `updateBuild`, and recomputes analysis when missing. Selecting a new vehicle keeps paint/strokes and clears decals (they are body-relative).
+
 ## Why Not More Persistence
 
 The experience is a single-session game; persisting the vehicle choice or mute state would add noise without value. Build number and livery are the only data with meaningful continuity, and both are intentionally scoped.

@@ -1,5 +1,7 @@
 # 09 — Scene System
 
+**V2:** scenes keep the same state machine and transitions. The physical presentation of Garage / Paint Booth / Reveal / Analysis / Street Run / Final Card is now 3D (see [02 — Architecture](./02-architecture.md)). The Unlayer paint booth is legacy-flagged; the V2 booth is the default path.
+
 ## State Machine
 
 `types/game.ts`:

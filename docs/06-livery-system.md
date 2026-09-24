@@ -89,6 +89,26 @@ Shading is applied **above** the artwork, so highlights still read over dark des
 
 The exported `dataUrl` is stored under `localStorage["vc-last-livery"]`. On reload, `GameContext` restores it and recomputes analysis + composite, so a refresh does not destroy the creation.
 
+## V2: Live Customization (replaces flat export-only workflow)
+
+V2 adds two complementary systems (`lib/3d/paint/`):
+
+### A. Livery texture (paint + freehand)
+
+- `LiveryLayer` wraps a `DynamicTexture` (2048×256, u≈perimeter / v≈width).
+- Base fill = build paint color with a light-to-dark gradient.
+- Brush strokes are stamped into the texture at picked-body UVs; eraser stamps the base color.
+- Undo/redo re-render the full texture from the serialized stroke list.
+- The texture is the body material's albedo, so painting is **live on the car** — no save-then-discover.
+
+### B. Projected decals (discrete graphics)
+
+- `DecalManager` places flat box meshes (DynamicTexture art) on the body via ray picking:
+  `pointer → camera ray → body hit → surface normal → orientation quaternion → offset 7mm`.
+- Serialized as `DecalInstance` (position, rotation quaternion, scale, tint, material, layer) — never raw Babylon objects.
+- Transforms: drag to move along the surface, R rotate, `[`/`]` scale, D duplicate, X material cycle (VINYL/PAINTED/CHROME/REFLECTIVE/EMISSIVE), O opacity, Del delete.
+- Polygon-offset-free: the small normal offset + depth bias avoids z-fighting.
+
 ## QA History — the Region Bug
 
 During visual QA it was discovered that artwork mapped from the **rear bumper** instead of the door.

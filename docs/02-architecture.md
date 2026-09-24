@@ -4,6 +4,36 @@
 
 VICE//CUSTOMS is a single-page experience rendered by Next.js App Router. One route (`/`) mounts an `Experience` provider tree; all eight scenes are React components switched by a global state machine. All heavy rendering happens in the browser on HTML Canvas 2D; nothing is rendered on the server except static markup.
 
+## V2 3D Architecture
+
+Babylon.js is the physical world; HTML/CSS remains the game HUD. All 3D code lives under `lib/3d/` and is isolated from React:
+
+```text
+lib/3d/
+  engine.ts          createViceEngine(canvas) → WebGPUEngine when supported, Engine (WebGL) otherwise
+  quality.ts         quality profile detection (low / medium / high)
+  camera.ts          CinematicCamera (damped orbit) + ChaseCamera (street run)
+  vehicles/          profile.ts (SVG path sampler), builder.ts (procedural rig), rig.ts (contract), materials.ts (PBR)
+  paint/             liveryTexture.ts (canvas-backed paint layer), presets.ts (decal art), decals.ts (projected decals)
+  environment/       garage.ts (bay), street.ts (night road + instanced city)
+  street/            controller.ts (arcade kinematics)
+  materializer.ts    materializeBuild(scene, ViceBuild) → rig + livery + decals
+```
+
+The bridge component `components/3d/VehicleStage.tsx` owns engine/scene lifecycle for a canvas and exposes a `StageApi` (rig, livery, decals, camera, snapshot) to scene components. Per-frame animation is driven by Babylon's render loop — never React state.
+
+```mermaid
+flowchart LR
+    B[ViceBuild serializable] --> M[materializeBuild]
+    M --> R[VehicleRig: PBR hull + glass + wheels]
+    M --> L[LiveryLayer: DynamicTexture strokes]
+    M --> D[DecalManager: projected decal meshes]
+    R --> S[Garage / Booth / Reveal / Street / Card scenes]
+    L --> S
+    D --> S
+    S --> H[HTML/CSS HUD layer]
+```
+
 ## App Router Structure
 
 ```text

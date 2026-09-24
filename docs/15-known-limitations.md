@@ -2,6 +2,19 @@
 
 Honest assessment of the current implementation. These are accepted trade-offs, not bugs.
 
+## V2 Limitations
+
+| Limitation | Detail |
+|------------|--------|
+| Procedural vehicle meshes | No production GLB assets yet — the rig is built from primitives (documented contract in `rig.ts` for dropping GLBs in later) |
+| Constant-width hull with elliptical taper | The body is a lofted sleeve; no per-panel geometry |
+| Flat side glass | Windows are flat sheets on the hull sides (arcade fidelity) |
+| Livery texture is body-wide | Painting writes to one texture spanning the whole hull — no per-door UV islands |
+| Decals conform via normal orientation | Flat box decals, not curved surface decals (7mm offset avoids z-fighting) |
+| Street environment is procedural and instanced | Buildings/palms repeat; the road is a straight corridor with light curves |
+| Kinematic arcade physics | No Havok/physx — the controller is a tuned kinematic model (documented in `controller.ts`) |
+| Unlayer requires internet | The legacy Unlayer booth still needs its CDN; the V2 booth is fully local |
+
 ## Current Limitations
 
 | Limitation | Detail |
