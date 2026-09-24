@@ -98,13 +98,13 @@ export class ChaseCamera {
 
   /** Position camera behind the car at yaw with smoothing; look at carTarget. */
   update(dt: number, carPos: Vector3, yaw: number, carTarget: Vector3, speedRatio: number): void {
-    const distance = 5.8 - speedRatio * 0.5;
-    const height = 2.2 + speedRatio * 0.15;
+    const distance = 5.1 - speedRatio * 0.4;
+    const height = 2.0 + speedRatio * 0.1;
     const behind = new Vector3(carPos.x - Math.sin(yaw) * distance, carPos.y + height, carPos.z - Math.cos(yaw) * distance);
-    const k = Math.min(1, dt * 6);
+    const k = Math.min(1, dt * 11);
     this.dampedPos = Vector3.Lerp(this.dampedPos, behind, k);
     this.camera.position = this.dampedPos;
-    this.lookTarget = Vector3.Lerp(this.lookTarget, carTarget, k);
+    this.lookTarget = Vector3.Lerp(this.lookTarget, carTarget, Math.min(1, dt * 14));
     this.camera.setTarget(this.lookTarget);
   }
 
