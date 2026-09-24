@@ -22,6 +22,13 @@
 ### Fixed
 
 - Babylon v8 API differences (attachControl signatures, InstancedMesh side-effect import, clearcoat assignment)
+- Body picking not registering — camera is now set as the scene's active camera so `scene.pick` works
+- Painted strokes not persisting — `materializeBuild` now syncs the serialized strokes into the live livery layer
+- Stroke point gating dropped single-dot marks; micro-moves no longer lose points
+- Keyboard shortcuts not attaching until after the 3D stage is ready
+- Audio failures no longer abort scene transitions (sound engine public API is fail-safe)
+- Street run kept dispatching `complete` every frame after the run ended, blocking later transitions — the engine render loop now stops at run end
+- Customize Again now reliably re-opens the paint booth (verified end-to-end)
 
 ### Notes
 
