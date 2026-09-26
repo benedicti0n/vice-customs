@@ -86,6 +86,28 @@ export class DecalManager {
     return mesh;
   }
 
+  placeAtPoint(worldPos: Vector3, worldNormal: Vector3, assetId: string, tint: string, material: DecalMaterialId, offset = 0.007): DecalInstance | null {
+    const inv = this.rig.root.getWorldMatrix().invert();
+    const localPos = Vector3.TransformCoordinates(worldPos, inv);
+    const localNormal = Vector3.TransformNormal(worldNormal, inv).normalize();
+    const q = orientationFromNormal(localNormal);
+    const instance: DecalInstance = {
+      id: nextDecalId(),
+      assetId,
+      vehicleId: this.rig.root.name,
+      position: [localPos.x + localNormal.x * offset, localPos.y + localNormal.y * offset, localPos.z + localNormal.z * offset],
+      rotation: [q.x, q.y, q.z, q.w],
+      scale: 1,
+      opacity: 1,
+      tint,
+      material,
+      layerIndex: this.instances.size,
+    };
+    this.meshes.set(instance.id, this.buildMesh(instance));
+    this.instances.set(instance.id, instance);
+    return instance;
+  }
+
   placeAtUV(u: number, v: number, assetId: string, tint: string, material: DecalMaterialId, offset = 0.007): DecalInstance | null {
     const hit = this.rig.pointAtUV(u, v);
     if (!hit) return null;

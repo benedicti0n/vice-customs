@@ -265,10 +265,12 @@ export default function PaintBoothV2() {
       }
 
       if (t === "decal") {
-        const uv = uvFromPointer(x, y);
-        if (!uv) return;
+        const pick = api.scene.pick(x, y, (m) => m === api.rig.body);
+        if (!pick?.hit || !pick.pickedPoint || !pick.getNormal) return;
+        const n = pick.getNormal(true);
+        if (!n) return;
         api.camera.setActive(false);
-        const inst = api.decals.placeAtUV(uv.u, uv.v, presetRef.current, tintRef.current, materialRef.current);
+        const inst = api.decals.placeAtPoint(pick.pickedPoint, n, presetRef.current, tintRef.current, materialRef.current);
         if (inst) {
           pushHistRef.current();
           commitRef.current({ decals: api.decals.list() });

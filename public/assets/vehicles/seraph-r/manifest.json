@@ -1,0 +1,45 @@
+{
+  "id": "seraph-r",
+  "source": "vice-customs-assets/cars/tempest-vx/tempest-vx-source.glb",
+  "sourceAttribution": "Unity Fan concept car meshes (CC0); modified for VICE//CUSTOMS.",
+  "lod0": "seraph-r.glb",
+  "lod1": "seraph-r-lod1.glb",
+  "bounds": {
+    "min": [
+      0,
+      0,
+      -4.476453833247901
+    ],
+    "max": [
+      0.8250597066210629,
+      1.286695687432586,
+      0.07354616675209928
+    ]
+  },
+  "wheelPivots": [
+    [
+      0.7055956956567764,
+      0.41510275458663887,
+      -1.1685467287303763
+    ],
+    [
+      -0.7055956688025051,
+      0.4149062469672078,
+      -3.8615752815572804
+    ],
+    [
+      0.7055954079864999,
+      0.4151027547498263,
+      -3.8618205791767113
+    ],
+    [
+      -0.7055956688025051,
+      0.4149062469752935,
+      -1.1683011405524522
+    ]
+  ],
+  "bodyMaterial": "vc-body-paint",
+  "forwardAxis": "+Z",
+  "units": "meters",
+  "notes": []
+}
