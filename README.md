@@ -51,6 +51,7 @@ Detailed technical documentation lives in [`/docs`](./docs/00-index.md).
 - Framer Motion (scene transitions, reveal, stat counters)
 - [`@unlayer/react-image-editor`](https://github.com/unlayer/react-image-editor) — legacy paint array (flag-gated)
 - [Babylon.js](https://www.babylonjs.com/) — WebGPU/WebGL 3D vehicles, garage, paint booth, street run, turntable
+- Production GLB vehicles (SERAPH R / TEMPEST VX), authored garage shell, and Kenney CC0 city kits via `scripts/pipeline-*.mjs` (see [Asset Pipeline](./docs/17-asset-pipeline.md))
 - HTML Canvas 2D — livery textures, decal art, build-card export, pixel analysis
 - Web Audio API — synthesized UI/garage/street sounds (no audio files)
 
