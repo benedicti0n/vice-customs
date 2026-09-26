@@ -4,7 +4,7 @@ import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 
 const PORT = 4060;
-const OUT = join(process.cwd(), "screenshots", "v2-review");
+const OUT = join(process.cwd(), "screenshots", "v2.5");
 
 async function main() {
   mkdirSync(OUT, { recursive: true });
