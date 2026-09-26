@@ -22,6 +22,48 @@ export async function loadDoc(path) {
   return io.read(path);
 }
 
+const FALLBACK_PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAEklEQVR42mP8z8Dwn4GBgYGJAAAxYAP99qTzKQAAAABJRU5ErkJggg==",
+  "base64"
+);
+const FALLBACK_DATA_URI = `data:image/png;base64,${FALLBACK_PNG.toString("base64")}`;
+
+/**
+ * Reads a GLB even when external resources (e.g. a shared texture that was
+ * dropped from the bundle) are missing. External texture URIs are rewritten
+ * to a tiny embedded fallback image at the GLB level, so the geometry loads.
+ */
+export async function loadDocLenient(path) {
+  const fs = await import("fs/promises");
+  const raw = Buffer.from(await fs.readFile(path));
+  if (raw.length > 20 && raw.toString("utf8", 16, 20) === "JSON") {
+    const jsonLen = raw.readUInt32LE(12);
+    let json = raw.toString("utf8", 20, 20 + jsonLen);
+    if (/\.(png|jpg|jpeg)"/i.test(json)) {
+      json = json.replace(/"(?:[^"]*\/)?[^"]+\.(?:png|jpe?g)"/gi, `"${FALLBACK_DATA_URI}"`);
+      let jsonBuf = Buffer.from(json, "utf8");
+      const paddedLen = Math.ceil(jsonBuf.length / 4) * 4;
+      if (paddedLen > jsonBuf.length) {
+        const padded = Buffer.alloc(paddedLen, 0x20);
+        jsonBuf.copy(padded);
+        jsonBuf = padded;
+      }
+      const bin = raw.subarray(20 + jsonLen);
+      const binLen = bin.length >= 8 ? bin.readUInt32LE(0) + 8 : bin.length;
+      const total = 20 + 8 + paddedLen + binLen;
+      const out = Buffer.alloc(total);
+      raw.copy(out, 0, 0, 12);
+      out.writeUInt32LE(total, 8);
+      out.writeUInt32LE(paddedLen, 12);
+      out.writeUInt32LE(0x4e4f534a, 16); // "JSON"
+      jsonBuf.copy(out, 20);
+      bin.copy(out, 20 + paddedLen);
+      return io.readBinary(out);
+    }
+  }
+  return io.read(raw);
+}
+
 export async function writeDoc(doc, path) {
   await io.write(path, doc);
   console.log("  wrote", path, formatBytes(statSync(path).size));
@@ -105,7 +147,7 @@ export async function normalizeDoc(doc, targetLength = 1) {
   const b = boundsOf(allPts);
   if (!b) return b;
   const len = b.max[2] - b.min[2];
-  const scale = targetLength / len;
+  const scale = targetLength > 0 ? targetLength / len : 1;
   const tx = -((b.min[0] + b.max[0]) / 2);
   const ty = -b.min[1];
   for (const mesh of root.listMeshes()) {

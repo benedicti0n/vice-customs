@@ -1,4 +1,5 @@
 import { Scene } from "@babylonjs/core/scene";
+import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
@@ -15,6 +16,8 @@ import { ReflectionProbe } from "@babylonjs/core/Probes/reflectionProbe";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import type { IShadowLight } from "@babylonjs/core/Lights/shadowLight";
 import { detectQuality } from "@/lib/3d/quality";
+import { SceneLoader } from "@babylonjs/core/Loading/sceneLoader";
+import "@babylonjs/loaders/glTF";
 
 export interface GarageEnvironment {
   floor: Mesh;
@@ -26,10 +29,33 @@ export interface GarageEnvOptions {
   mode?: "garage" | "booth" | "reveal" | "card";
 }
 
-export function buildGarageEnvironment(scene: Scene, opts: GarageEnvOptions = {}): GarageEnvironment {
+export async function buildGarageEnvironment(scene: Scene, opts: GarageEnvOptions = {}): Promise<GarageEnvironment> {
   const quality = detectQuality(false);
   const mode = opts.mode ?? "garage";
   const dim = mode === "reveal";
+
+  // authored parking-garage shell (production asset); procedural walls below as fallback
+  let shell: import("@babylonjs/core/Meshes/abstractMesh").AbstractMesh[] | null = null;
+  {
+    try {
+      const res = await SceneLoader.ImportMeshAsync("", "/assets/garage/", "parking-garage.glb", scene);
+      shell = res.meshes;
+    } catch {
+      shell = null;
+    }
+  }
+  const shellRoot = new TransformNode("vc-garage-shell", scene);
+  if (shell) {
+    for (const m of shell) {
+      m.setParent(shellRoot);
+    }
+  }
+  if (shell) {
+    shellRoot.position = new Vector3(0, 0, -6);
+    shellRoot.rotation.y = Math.PI / 2;
+    shellRoot.scaling = new Vector3(1.4, 1.4, 1.4);
+    shellRoot.position.y = -0.35;
+  }
 
   const floorMat = new PBRMaterial("vc-floor-mat", scene);
   floorMat.metallic = 0.05;
@@ -81,6 +107,7 @@ export function buildGarageEnvironment(scene: Scene, opts: GarageEnvOptions = {}
   const backWall = MeshBuilder.CreateBox("vc-wall-back", { width: 24, height: 7, depth: 0.4 }, scene);
   backWall.position = new Vector3(0, 3.3, -8.5);
   backWall.material = wallMat;
+  if (shell) backWall.isVisible = false;
 
   const ceilMat = new PBRMaterial("vc-ceil", scene);
   ceilMat.metallic = 0;
@@ -89,6 +116,7 @@ export function buildGarageEnvironment(scene: Scene, opts: GarageEnvOptions = {}
   const ceiling = MeshBuilder.CreateBox("vc-ceiling", { width: 24, height: 0.4, depth: 20 }, scene);
   ceiling.position = new Vector3(0, 6.6, 0);
   ceiling.material = ceilMat;
+  if (shell) ceiling.isVisible = false;
 
   // overhead light bars
   const lightBarMat = new PBRMaterial("vc-lightbar", scene);
@@ -232,6 +260,7 @@ export function buildGarageEnvironment(scene: Scene, opts: GarageEnvOptions = {}
     floor,
     platform,
     dispose: () => {
+      shellRoot.dispose();
       floor.dispose();
       platform.dispose();
       stripL.dispose();

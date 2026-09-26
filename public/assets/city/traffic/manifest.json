@@ -1,0 +1,252 @@
+[
+  {
+    "id": "ambulance",
+    "file": "ambulance.glb",
+    "size": 53456
+  },
+  {
+    "id": "box",
+    "file": "box.glb",
+    "size": 6980
+  },
+  {
+    "id": "cone-flat",
+    "file": "cone-flat.glb",
+    "size": 8448
+  },
+  {
+    "id": "cone",
+    "file": "cone.glb",
+    "size": 8432
+  },
+  {
+    "id": "debris-bolt",
+    "file": "debris-bolt.glb",
+    "size": 3072
+  },
+  {
+    "id": "debris-bumper",
+    "file": "debris-bumper.glb",
+    "size": 5552
+  },
+  {
+    "id": "debris-door-window",
+    "file": "debris-door-window.glb",
+    "size": 4196
+  },
+  {
+    "id": "debris-door",
+    "file": "debris-door.glb",
+    "size": 3940
+  },
+  {
+    "id": "debris-drivetrain-axle",
+    "file": "debris-drivetrain-axle.glb",
+    "size": 8528
+  },
+  {
+    "id": "debris-drivetrain",
+    "file": "debris-drivetrain.glb",
+    "size": 15908
+  },
+  {
+    "id": "debris-nut",
+    "file": "debris-nut.glb",
+    "size": 3092
+  },
+  {
+    "id": "debris-plate-a",
+    "file": "debris-plate-a.glb",
+    "size": 3224
+  },
+  {
+    "id": "debris-plate-b",
+    "file": "debris-plate-b.glb",
+    "size": 3368
+  },
+  {
+    "id": "debris-plate-small-a",
+    "file": "debris-plate-small-a.glb",
+    "size": 2808
+  },
+  {
+    "id": "debris-plate-small-b",
+    "file": "debris-plate-small-b.glb",
+    "size": 3228
+  },
+  {
+    "id": "debris-spoiler-a",
+    "file": "debris-spoiler-a.glb",
+    "size": 3508
+  },
+  {
+    "id": "debris-spoiler-b",
+    "file": "debris-spoiler-b.glb",
+    "size": 4832
+  },
+  {
+    "id": "debris-tire",
+    "file": "debris-tire.glb",
+    "size": 11028
+  },
+  {
+    "id": "delivery-flat",
+    "file": "delivery-flat.glb",
+    "size": 55696
+  },
+  {
+    "id": "delivery",
+    "file": "delivery.glb",
+    "size": 54072
+  },
+  {
+    "id": "firetruck",
+    "file": "firetruck.glb",
+    "size": 64528
+  },
+  {
+    "id": "garbage-truck",
+    "file": "garbage-truck.glb",
+    "size": 61116
+  },
+  {
+    "id": "hatchback-sports",
+    "file": "hatchback-sports.glb",
+    "size": 49724
+  },
+  {
+    "id": "kart-oobi",
+    "file": "kart-oobi.glb",
+    "size": 89660
+  },
+  {
+    "id": "kart-oodi",
+    "file": "kart-oodi.glb",
+    "size": 79860
+  },
+  {
+    "id": "kart-ooli",
+    "file": "kart-ooli.glb",
+    "size": 81564
+  },
+  {
+    "id": "kart-oopi",
+    "file": "kart-oopi.glb",
+    "size": 83588
+  },
+  {
+    "id": "kart-oozi",
+    "file": "kart-oozi.glb",
+    "size": 85044
+  },
+  {
+    "id": "police",
+    "file": "police.glb",
+    "size": 49056
+  },
+  {
+    "id": "race-future",
+    "file": "race-future.glb",
+    "size": 41424
+  },
+  {
+    "id": "race",
+    "file": "race.glb",
+    "size": 45824
+  },
+  {
+    "id": "sedan-sports",
+    "file": "sedan-sports.glb",
+    "size": 54444
+  },
+  {
+    "id": "sedan",
+    "file": "sedan.glb",
+    "size": 51928
+  },
+  {
+    "id": "suv-luxury",
+    "file": "suv-luxury.glb",
+    "size": 51472
+  },
+  {
+    "id": "suv",
+    "file": "suv.glb",
+    "size": 59448
+  },
+  {
+    "id": "taxi",
+    "file": "taxi.glb",
+    "size": 45744
+  },
+  {
+    "id": "tractor-police",
+    "file": "tractor-police.glb",
+    "size": 80012
+  },
+  {
+    "id": "tractor-shovel",
+    "file": "tractor-shovel.glb",
+    "size": 82444
+  },
+  {
+    "id": "tractor",
+    "file": "tractor.glb",
+    "size": 71196
+  },
+  {
+    "id": "truck-flat",
+    "file": "truck-flat.glb",
+    "size": 43120
+  },
+  {
+    "id": "truck",
+    "file": "truck.glb",
+    "size": 55208
+  },
+  {
+    "id": "van",
+    "file": "van.glb",
+    "size": 54836
+  },
+  {
+    "id": "wheel-dark",
+    "file": "wheel-dark.glb",
+    "size": 13052
+  },
+  {
+    "id": "wheel-default",
+    "file": "wheel-default.glb",
+    "size": 12180
+  },
+  {
+    "id": "wheel-racing",
+    "file": "wheel-racing.glb",
+    "size": 13056
+  },
+  {
+    "id": "wheel-tractor-back",
+    "file": "wheel-tractor-back.glb",
+    "size": 16492
+  },
+  {
+    "id": "wheel-tractor-dark-back",
+    "file": "wheel-tractor-dark-back.glb",
+    "size": 16504
+  },
+  {
+    "id": "wheel-tractor-dark-front",
+    "file": "wheel-tractor-dark-front.glb",
+    "size": 13148
+  },
+  {
+    "id": "wheel-tractor-front",
+    "file": "wheel-tractor-front.glb",
+    "size": 13160
+  },
+  {
+    "id": "wheel-truck",
+    "file": "wheel-truck.glb",
+    "size": 15552
+  }
+]

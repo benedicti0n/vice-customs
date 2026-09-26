@@ -225,6 +225,9 @@ export default function FinalBuildCardV2() {
       <div className="absolute inset-x-0 bottom-4 z-30 text-center font-mono text-[9px] uppercase tracking-[0.4em] text-ink-faint">
         Vice Customs // Ocean District — all vehicles fictional
       </div>
+      <div className="absolute inset-x-0 bottom-1 z-30 text-center font-mono text-[8px] tracking-[0.2em] text-ink-faint/60">
+        Concept cars by Unity Fan (CC0) · Parking Garage by SPLEEN VISION (CC BY 4.0) · Kenney (CC0) — modified for VICE//CUSTOMS
+      </div>
     </div>
   );
 }

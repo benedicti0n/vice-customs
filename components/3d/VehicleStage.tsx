@@ -64,8 +64,8 @@ export default function VehicleStage({ build, mode, interactive = true, onReady,
         }
         const { scene } = handle;
 
-        const materialized = materializeBuild(scene, build);
-        const env = buildGarageEnvironment(scene, { mode });
+        const materialized = await materializeBuild(scene, build);
+        const env = await buildGarageEnvironment(scene, { mode });
         const camera = new CinematicCamera(scene, canvas, shotFor(mode, materialized.rig.cameraTarget));
         camera.setActive(interactive);
 

@@ -1,0 +1,73 @@
+﻿file,label,outputs
+bridge-pillar-wide.glb,bridge pillar wide,bridge-pillar-wide_views.png; bridge-pillar-wide_silhouette_views.png
+bridge-pillar.glb,bridge pillar,bridge-pillar_views.png; bridge-pillar_silhouette_views.png
+construction-barrier.glb,construction barrier,construction-barrier_views.png; construction-barrier_silhouette_views.png
+construction-cone.glb,construction cone,construction-cone_views.png; construction-cone_silhouette_views.png
+construction-light.glb,construction light,construction-light_views.png; construction-light_silhouette_views.png
+light-curved-cross.glb,light curved cross,light-curved-cross_views.png; light-curved-cross_silhouette_views.png
+light-curved-double.glb,light curved double,light-curved-double_views.png; light-curved-double_silhouette_views.png
+light-curved.glb,light curved,light-curved_views.png; light-curved_silhouette_views.png
+light-square-cross.glb,light square cross,light-square-cross_views.png; light-square-cross_silhouette_views.png
+light-square-double.glb,light square double,light-square-double_views.png; light-square-double_silhouette_views.png
+light-square.glb,light square,light-square_views.png; light-square_silhouette_views.png
+road-bend-barrier.glb,road bend barrier,road-bend-barrier_views.png; road-bend-barrier_silhouette_views.png
+road-bend-sidewalk.glb,road bend sidewalk,road-bend-sidewalk_views.png; road-bend-sidewalk_silhouette_views.png
+road-bend-square-barrier.glb,road bend square barrier,road-bend-square-barrier_views.png; road-bend-square-barrier_silhouette_views.png
+road-bend-square.glb,road bend square,road-bend-square_views.png; road-bend-square_silhouette_views.png
+road-bend.glb,road bend,road-bend_views.png; road-bend_silhouette_views.png
+road-bridge.glb,road bridge,road-bridge_views.png; road-bridge_silhouette_views.png
+road-crossing.glb,road crossing,road-crossing_views.png; road-crossing_silhouette_views.png
+road-crossroad-barrier.glb,road crossroad barrier,road-crossroad-barrier_views.png; road-crossroad-barrier_silhouette_views.png
+road-crossroad-line.glb,road crossroad line,road-crossroad-line_views.png; road-crossroad-line_silhouette_views.png
+road-crossroad-path.glb,road crossroad path,road-crossroad-path_views.png; road-crossroad-path_silhouette_views.png
+road-crossroad.glb,road crossroad,road-crossroad_views.png; road-crossroad_silhouette_views.png
+road-curve-barrier.glb,road curve barrier,road-curve-barrier_views.png; road-curve-barrier_silhouette_views.png
+road-curve-intersection-barrier.glb,road curve intersection barrier,road-curve-intersection-barrier_views.png; road-curve-intersection-barrier_silhouette_views.png
+road-curve-intersection.glb,road curve intersection,road-curve-intersection_views.png; road-curve-intersection_silhouette_views.png
+road-curve-pavement.glb,road curve pavement,road-curve-pavement_views.png; road-curve-pavement_silhouette_views.png
+road-curve.glb,road curve,road-curve_views.png; road-curve_silhouette_views.png
+road-driveway-double-barrier.glb,road driveway double barrier,road-driveway-double-barrier_views.png; road-driveway-double-barrier_silhouette_views.png
+road-driveway-double.glb,road driveway double,road-driveway-double_views.png; road-driveway-double_silhouette_views.png
+road-driveway-single-barrier.glb,road driveway single barrier,road-driveway-single-barrier_views.png; road-driveway-single-barrier_silhouette_views.png
+road-driveway-single.glb,road driveway single,road-driveway-single_views.png; road-driveway-single_silhouette_views.png
+road-end-barrier.glb,road end barrier,road-end-barrier_views.png; road-end-barrier_silhouette_views.png
+road-end-round-barrier.glb,road end round barrier,road-end-round-barrier_views.png; road-end-round-barrier_silhouette_views.png
+road-end-round.glb,road end round,road-end-round_views.png; road-end-round_silhouette_views.png
+road-end.glb,road end,road-end_views.png; road-end_silhouette_views.png
+road-intersection-barrier.glb,road intersection barrier,road-intersection-barrier_views.png; road-intersection-barrier_silhouette_views.png
+road-intersection-line.glb,road intersection line,road-intersection-line_views.png; road-intersection-line_silhouette_views.png
+road-intersection-path.glb,road intersection path,road-intersection-path_views.png; road-intersection-path_silhouette_views.png
+road-intersection.glb,road intersection,road-intersection_views.png; road-intersection_silhouette_views.png
+road-roundabout-barrier.glb,road roundabout barrier,road-roundabout-barrier_views.png; road-roundabout-barrier_silhouette_views.png
+road-roundabout.glb,road roundabout,road-roundabout_views.png; road-roundabout_silhouette_views.png
+road-side-barrier.glb,road side barrier,road-side-barrier_views.png; road-side-barrier_silhouette_views.png
+road-side-entry-barrier.glb,road side entry barrier,road-side-entry-barrier_views.png; road-side-entry-barrier_silhouette_views.png
+road-side-entry.glb,road side entry,road-side-entry_views.png; road-side-entry_silhouette_views.png
+road-side-exit-barrier.glb,road side exit barrier,road-side-exit-barrier_views.png; road-side-exit-barrier_silhouette_views.png
+road-side-exit.glb,road side exit,road-side-exit_views.png; road-side-exit_silhouette_views.png
+road-side.glb,road side,road-side_views.png; road-side_silhouette_views.png
+road-slant-barrier.glb,road slant barrier,road-slant-barrier_views.png; road-slant-barrier_silhouette_views.png
+road-slant-curve-barrier.glb,road slant curve barrier,road-slant-curve-barrier_views.png; road-slant-curve-barrier_silhouette_views.png
+road-slant-curve.glb,road slant curve,road-slant-curve_views.png; road-slant-curve_silhouette_views.png
+road-slant-flat-curve.glb,road slant flat curve,road-slant-flat-curve_views.png; road-slant-flat-curve_silhouette_views.png
+road-slant-flat-high.glb,road slant flat high,road-slant-flat-high_views.png; road-slant-flat-high_silhouette_views.png
+road-slant-flat.glb,road slant flat,road-slant-flat_views.png; road-slant-flat_silhouette_views.png
+road-slant-high-barrier.glb,road slant high barrier,road-slant-high-barrier_views.png; road-slant-high-barrier_silhouette_views.png
+road-slant-high.glb,road slant high,road-slant-high_views.png; road-slant-high_silhouette_views.png
+road-slant.glb,road slant,road-slant_views.png; road-slant_silhouette_views.png
+road-split-barrier.glb,road split barrier,road-split-barrier_views.png; road-split-barrier_silhouette_views.png
+road-split.glb,road split,road-split_views.png; road-split_silhouette_views.png
+road-square-barrier.glb,road square barrier,road-square-barrier_views.png; road-square-barrier_silhouette_views.png
+road-square.glb,road square,road-square_views.png; road-square_silhouette_views.png
+road-straight-barrier-end.glb,road straight barrier end,road-straight-barrier-end_views.png; road-straight-barrier-end_silhouette_views.png
+road-straight-barrier-half.glb,road straight barrier half,road-straight-barrier-half_views.png; road-straight-barrier-half_silhouette_views.png
+road-straight-barrier.glb,road straight barrier,road-straight-barrier_views.png; road-straight-barrier_silhouette_views.png
+road-straight-half.glb,road straight half,road-straight-half_views.png; road-straight-half_silhouette_views.png
+road-straight.glb,road straight,road-straight_views.png; road-straight_silhouette_views.png
+sign-highway-detailed.glb,sign highway detailed,sign-highway-detailed_views.png; sign-highway-detailed_silhouette_views.png
+sign-highway-wide.glb,sign highway wide,sign-highway-wide_views.png; sign-highway-wide_silhouette_views.png
+sign-highway.glb,sign highway,sign-highway_views.png; sign-highway_silhouette_views.png
+tile-high.glb,tile high,tile-high_views.png; tile-high_silhouette_views.png
+tile-low.glb,tile low,tile-low_views.png; tile-low_silhouette_views.png
+tile-slant.glb,tile slant,tile-slant_views.png; tile-slant_silhouette_views.png
+tile-slantHigh.glb,tile slantHigh,tile-slantHigh_views.png; tile-slantHigh_silhouette_views.png

@@ -1,5 +1,29 @@
 # Changelog
 
+## 2.5.0
+
+### Added
+
+- Production GLB pipeline (`scripts/pipeline-cars.mjs`, `pipeline-env.mjs`) using glTF-Transform + meshopt
+- Typed asset registry (`lib/3d/assets/registry.ts`) — semantic node prefixes, wheel pivots, dims, camera framing, attribution
+- Production vehicles: SERAPH R (Supra-style coupe source) and TEMPEST VX (futuristic concept source) with split/spin/steer wheels, PBR body paint + clearcoat, livery texture, LOD0/LOD1, meshopt compression
+- Authored garage shell from the SPLEEN VISION parking-garage scan (simplified to ~45k tris) behind the authored props
+- City kit props (Kenney CC0 industrial/commercial/traffic packs) instanced into the street run
+- Missing-texture lenient GLB loader, kit caching/disposal, ray-based decal placement
+- NOTICE.md + in-app credits (CC BY 4.0 / CC0 attribution)
+
+### Changed
+
+- SERAPH R ↔ TEMPEST VX vehicle-source swap for design fit (documented in `docs/17-asset-pipeline.md`)
+- Decals place via world-point ray picking (UV-independent on production bodies)
+- `materializeBuild` is async and prefers production assets with procedural fallback
+
+### Known limitations (V2.5)
+
+- MARLIN 88 keeps the procedural fallback (source lacks material separation, wheel topology, textures; validator error)
+- Livery wrap uses source UV0 (compat layer; decals unaffected)
+- Street road remains procedural; kits supply the city dressing
+
 ## Unreleased
 
 - V2 3D customization experience in development (see below).

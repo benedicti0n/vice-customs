@@ -1,0 +1,127 @@
+[
+  {
+    "id": "building-a",
+    "file": "building-a.glb",
+    "size": 74616
+  },
+  {
+    "id": "building-b",
+    "file": "building-b.glb",
+    "size": 88232
+  },
+  {
+    "id": "building-c",
+    "file": "building-c.glb",
+    "size": 66976
+  },
+  {
+    "id": "building-d",
+    "file": "building-d.glb",
+    "size": 43588
+  },
+  {
+    "id": "building-e",
+    "file": "building-e.glb",
+    "size": 55644
+  },
+  {
+    "id": "building-f",
+    "file": "building-f.glb",
+    "size": 58904
+  },
+  {
+    "id": "building-g",
+    "file": "building-g.glb",
+    "size": 46928
+  },
+  {
+    "id": "building-h",
+    "file": "building-h.glb",
+    "size": 27956
+  },
+  {
+    "id": "building-i",
+    "file": "building-i.glb",
+    "size": 31720
+  },
+  {
+    "id": "building-j",
+    "file": "building-j.glb",
+    "size": 33512
+  },
+  {
+    "id": "building-k",
+    "file": "building-k.glb",
+    "size": 28272
+  },
+  {
+    "id": "building-l",
+    "file": "building-l.glb",
+    "size": 71324
+  },
+  {
+    "id": "building-m",
+    "file": "building-m.glb",
+    "size": 61056
+  },
+  {
+    "id": "building-n",
+    "file": "building-n.glb",
+    "size": 45888
+  },
+  {
+    "id": "building-o",
+    "file": "building-o.glb",
+    "size": 33116
+  },
+  {
+    "id": "building-p",
+    "file": "building-p.glb",
+    "size": 45188
+  },
+  {
+    "id": "building-q",
+    "file": "building-q.glb",
+    "size": 77248
+  },
+  {
+    "id": "building-r",
+    "file": "building-r.glb",
+    "size": 69928
+  },
+  {
+    "id": "building-s",
+    "file": "building-s.glb",
+    "size": 34352
+  },
+  {
+    "id": "building-t",
+    "file": "building-t.glb",
+    "size": 60036
+  },
+  {
+    "id": "chimney-basic",
+    "file": "chimney-basic.glb",
+    "size": 4628
+  },
+  {
+    "id": "chimney-large",
+    "file": "chimney-large.glb",
+    "size": 9336
+  },
+  {
+    "id": "chimney-medium",
+    "file": "chimney-medium.glb",
+    "size": 7148
+  },
+  {
+    "id": "chimney-small",
+    "file": "chimney-small.glb",
+    "size": 5392
+  },
+  {
+    "id": "detail-tank",
+    "file": "detail-tank.glb",
+    "size": 10308
+  }
+]

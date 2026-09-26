@@ -1,4 +1,4 @@
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
+
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Vector3, Quaternion, Matrix } from "@babylonjs/core/Maths/math.vector";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
@@ -7,7 +7,10 @@ import type { Scene } from "@babylonjs/core/scene";
 import type { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { getDecalTexture, DECAL_PRESETS, type DecalMaterialId } from "./presets";
 import { makeDecalMaterial, makeEmissiveDecalMaterial, makeChromeDecalMaterial, makeReflectiveDecalMaterial } from "@/lib/3d/vehicles/materials";
+import { VertexBuffer } from "@babylonjs/core/Buffers/buffer";
 import type { VehicleRig } from "@/lib/3d/vehicles/rig";
+import type { Mesh } from "@babylonjs/core/Meshes/mesh";
+
 
 export interface DecalInstance {
   id: string;
@@ -27,6 +30,31 @@ let decalSeq = 0;
 export function nextDecalId(): string {
   decalSeq += 1;
   return `d${Date.now().toString(36)}${decalSeq}`;
+}
+
+/**
+ * Robust face normal for a picked mesh: computed from the picked face's
+ * triangle indices (no facet data or vertex-normal dependency).
+ */
+export function pickedFaceNormal(mesh: Mesh, faceId: number, world: boolean, camPos?: Vector3): Vector3 | null {
+  const positions = mesh.getVerticesData(VertexBuffer.PositionKind);
+  const indices = mesh.getIndices();
+  if (!positions || !indices) return null;
+  const f = faceId * 3;
+  if (f + 2 >= indices.length) return null;
+  const a = new Vector3(positions[indices[f] * 3], positions[indices[f] * 3 + 1], positions[indices[f] * 3 + 2]);
+  const b = new Vector3(positions[indices[f + 1] * 3], positions[indices[f + 1] * 3 + 1], positions[indices[f + 1] * 3 + 2]);
+  const c = new Vector3(positions[indices[f + 2] * 3], positions[indices[f + 2] * 3 + 1], positions[indices[f + 2] * 3 + 2]);
+  let n = Vector3.Cross(b.subtract(a), c.subtract(a)).normalize();
+  if (world) {
+    const wm = mesh.getWorldMatrix();
+    n = Vector3.TransformNormal(n, wm).normalize();
+    if (camPos) {
+      const center = Vector3.TransformCoordinates(a.add(b).add(c).scale(1 / 3), wm);
+      if (Vector3.Dot(n, camPos.subtract(center)) < 0) n = n.negate();
+    }
+  }
+  return n;
 }
 
 /** Orient a flat decal so its face matches the surface normal. */
@@ -150,7 +178,7 @@ export class DecalManager {
     if (!mesh) return false;
     const pick = ray.intersectsMesh(this.rig.body, false);
     if (!pick.hit || !pick.pickedPoint || !pick.getNormal) return false;
-    const rawNormal = pick.getNormal(true);
+    const rawNormal = pick.getNormal(true, true);
     if (!rawNormal) return false;
     const worldNormal = rawNormal.normalize();
     const inv = this.rig.root.getWorldMatrix().invert();

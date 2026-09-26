@@ -83,6 +83,12 @@ pink/orange gradient    → Vice Classic (heat 64)
 - `scripts/ascii-*.mjs` convert PNGs to ASCII so visual QA can be performed in a terminal (the model used for this project cannot view images directly).
 - All scripts are dev-only dependencies (`sharp`, `@napi-rs/canvas`, `puppeteer-core`) and are not part of the production bundle.
 
+## V2.5 Asset Verification
+
+- `scripts/pipeline-cars.mjs` / `pipeline-env.mjs` are the conversion commands; manifests written next to each production GLB
+- The review screenshot flow (`scripts/screenshot-v2-review.ts`) exercises the production flow: boot, authored garage, all three selector platforms, paint, decals, reveal, analysis, street, build card
+- Fallback check: MARLIN 88 exercises the procedural path; delete/move a production GLB to verify the procedural fallback engages cleanly
+
 ## Chrome
 
 The headless harness expects a local Chrome at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` (macOS default path).

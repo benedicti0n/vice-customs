@@ -1,0 +1,207 @@
+[
+  {
+    "id": "building-a",
+    "file": "building-a.glb",
+    "size": 46892
+  },
+  {
+    "id": "building-b",
+    "file": "building-b.glb",
+    "size": 47436
+  },
+  {
+    "id": "building-c",
+    "file": "building-c.glb",
+    "size": 44372
+  },
+  {
+    "id": "building-d",
+    "file": "building-d.glb",
+    "size": 42380
+  },
+  {
+    "id": "building-e",
+    "file": "building-e.glb",
+    "size": 57888
+  },
+  {
+    "id": "building-f",
+    "file": "building-f.glb",
+    "size": 67000
+  },
+  {
+    "id": "building-g",
+    "file": "building-g.glb",
+    "size": 73172
+  },
+  {
+    "id": "building-h",
+    "file": "building-h.glb",
+    "size": 55768
+  },
+  {
+    "id": "building-i",
+    "file": "building-i.glb",
+    "size": 91304
+  },
+  {
+    "id": "building-j",
+    "file": "building-j.glb",
+    "size": 167340
+  },
+  {
+    "id": "building-k",
+    "file": "building-k.glb",
+    "size": 95920
+  },
+  {
+    "id": "building-l",
+    "file": "building-l.glb",
+    "size": 110868
+  },
+  {
+    "id": "building-m",
+    "file": "building-m.glb",
+    "size": 120404
+  },
+  {
+    "id": "building-n",
+    "file": "building-n.glb",
+    "size": 129388
+  },
+  {
+    "id": "building-skyscraper-a",
+    "file": "building-skyscraper-a.glb",
+    "size": 49800
+  },
+  {
+    "id": "building-skyscraper-b",
+    "file": "building-skyscraper-b.glb",
+    "size": 61532
+  },
+  {
+    "id": "building-skyscraper-c",
+    "file": "building-skyscraper-c.glb",
+    "size": 65256
+  },
+  {
+    "id": "building-skyscraper-d",
+    "file": "building-skyscraper-d.glb",
+    "size": 72776
+  },
+  {
+    "id": "building-skyscraper-e",
+    "file": "building-skyscraper-e.glb",
+    "size": 45668
+  },
+  {
+    "id": "detail-awning-wide",
+    "file": "detail-awning-wide.glb",
+    "size": 3448
+  },
+  {
+    "id": "detail-awning",
+    "file": "detail-awning.glb",
+    "size": 3356
+  },
+  {
+    "id": "detail-overhang-wide",
+    "file": "detail-overhang-wide.glb",
+    "size": 4036
+  },
+  {
+    "id": "detail-overhang",
+    "file": "detail-overhang.glb",
+    "size": 4028
+  },
+  {
+    "id": "detail-parasol-a",
+    "file": "detail-parasol-a.glb",
+    "size": 5128
+  },
+  {
+    "id": "detail-parasol-b",
+    "file": "detail-parasol-b.glb",
+    "size": 6032
+  },
+  {
+    "id": "low-detail-building-a",
+    "file": "low-detail-building-a.glb",
+    "size": 7768
+  },
+  {
+    "id": "low-detail-building-b",
+    "file": "low-detail-building-b.glb",
+    "size": 8484
+  },
+  {
+    "id": "low-detail-building-c",
+    "file": "low-detail-building-c.glb",
+    "size": 6676
+  },
+  {
+    "id": "low-detail-building-d",
+    "file": "low-detail-building-d.glb",
+    "size": 5060
+  },
+  {
+    "id": "low-detail-building-e",
+    "file": "low-detail-building-e.glb",
+    "size": 4816
+  },
+  {
+    "id": "low-detail-building-f",
+    "file": "low-detail-building-f.glb",
+    "size": 4204
+  },
+  {
+    "id": "low-detail-building-g",
+    "file": "low-detail-building-g.glb",
+    "size": 7600
+  },
+  {
+    "id": "low-detail-building-h",
+    "file": "low-detail-building-h.glb",
+    "size": 13468
+  },
+  {
+    "id": "low-detail-building-i",
+    "file": "low-detail-building-i.glb",
+    "size": 6588
+  },
+  {
+    "id": "low-detail-building-j",
+    "file": "low-detail-building-j.glb",
+    "size": 8420
+  },
+  {
+    "id": "low-detail-building-k",
+    "file": "low-detail-building-k.glb",
+    "size": 4516
+  },
+  {
+    "id": "low-detail-building-l",
+    "file": "low-detail-building-l.glb",
+    "size": 6736
+  },
+  {
+    "id": "low-detail-building-m",
+    "file": "low-detail-building-m.glb",
+    "size": 7928
+  },
+  {
+    "id": "low-detail-building-n",
+    "file": "low-detail-building-n.glb",
+    "size": 3728
+  },
+  {
+    "id": "low-detail-building-wide-a",
+    "file": "low-detail-building-wide-a.glb",
+    "size": 7032
+  },
+  {
+    "id": "low-detail-building-wide-b",
+    "file": "low-detail-building-wide-b.glb",
+    "size": 9648
+  }
+]

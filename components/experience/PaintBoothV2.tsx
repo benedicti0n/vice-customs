@@ -11,6 +11,7 @@ import HudPanel from "@/components/ui/HudPanel";
 import { useBuild } from "@/lib/game/useBuild";
 import { useGame } from "@/lib/game/GameContext";
 import { DECAL_PRESETS, DECAL_TINTS, DECAL_MATERIALS, type DecalMaterialId } from "@/lib/3d/paint/presets";
+import { pickedFaceNormal } from "@/lib/3d/paint/decals";
 import type { BrushStroke } from "@/lib/3d/paint/liveryTexture";
 import type { DecalInstance } from "@/lib/3d/paint/decals";
 import { sound } from "@/lib/sound";
@@ -266,8 +267,8 @@ export default function PaintBoothV2() {
 
       if (t === "decal") {
         const pick = api.scene.pick(x, y, (m) => m === api.rig.body);
-        if (!pick?.hit || !pick.pickedPoint || !pick.getNormal) return;
-        const n = pick.getNormal(true);
+        if (!pick?.hit || !pick.pickedPoint || pick.faceId == null) return;
+        const n = pickedFaceNormal(api.rig.body, pick.faceId, true, api.camera.camera.position);
         if (!n) return;
         api.camera.setActive(false);
         const inst = api.decals.placeAtPoint(pick.pickedPoint, n, presetRef.current, tintRef.current, materialRef.current);

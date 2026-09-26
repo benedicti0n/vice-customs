@@ -45,7 +45,7 @@ export default function StreetRunV2() {
           return;
         }
         const { scene } = handle;
-        const materialized = materializeBuild(scene, build);
+        const materialized = await materializeBuild(scene, build);
         buildStreetEnvironment(scene);
         const camera = new ChaseCamera(scene, canvas);
         const controller = new ArcadeController({ maxSpeed: 26 + (vehicle.stats.speed / 100) * 12 });

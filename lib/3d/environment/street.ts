@@ -13,6 +13,7 @@ import { ParticleSystem } from "@babylonjs/core/Particles/particleSystem";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator";
 import { detectQuality } from "@/lib/3d/quality";
+import { loadKit, instanceKit } from "./kitLoader";
 
 export const ROAD_LENGTH = 1500;
 const ROAD_WIDTH = 11;
@@ -22,7 +23,73 @@ export interface StreetEnvironment {
   ground: InstancedMesh[];
 }
 
-export function buildStreetEnvironment(scene: Scene): StreetEnvironment {
+let streetSeed = 7;
+const streetRnd = () => {
+  streetSeed = (streetSeed * 16807) % 2147483647;
+  return streetSeed / 2147483647;
+};
+const rnd = streetRnd;
+
+async function authorStreetProps(scene: Scene) {
+  try {
+    const ind = await loadKit(scene, "/assets/city/industrial/building-a.glb");
+    const ind2 = await loadKit(scene, "/assets/city/industrial/building-d.glb");
+    const ind3 = await loadKit(scene, "/assets/city/industrial/building-k.glb");
+    const chimney = await loadKit(scene, "/assets/city/industrial/chimney-basic.glb").catch(() => null);
+    const tank = await loadKit(scene, "/assets/city/industrial/tank.glb").catch(() => null);
+    const com = await loadKit(scene, "/assets/city/commercial/building-a.glb").catch(() => null);
+    const com2 = await loadKit(scene, "/assets/city/commercial/building-c.glb").catch(() => null);
+    const sedan = await loadKit(scene, "/assets/city/traffic/sedan.glb").catch(() => null);
+    const van = await loadKit(scene, "/assets/city/traffic/van.glb").catch(() => null);
+    const police = await loadKit(scene, "/assets/city/traffic/police.glb").catch(() => null);
+
+    const kits = [ind, ind2, ind3, com, com2].filter(Boolean);
+    for (let i = 0; i < 64; i++) {
+      const kit = kits[i % kits.length];
+      if (!kit) continue;
+      const z = -ROAD_LENGTH / 2 + streetRnd() * ROAD_LENGTH;
+      const side = streetRnd() > 0.5 ? 1 : -1;
+      const dist = ROAD_WIDTH / 2 + 8 + streetRnd() * 30;
+      const scale = 2 + streetRnd() * 6;
+      const instances = instanceKit(kit, `vc-kit-b${i}`);
+      for (const inst of instances) {
+        inst.position = new Vector3(side * dist, 0, z);
+        inst.scaling.scaleInPlace(scale);
+        inst.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
+      }
+    }
+    for (const kit of [chimney, tank]) {
+      if (!kit) continue;
+      for (let i = 0; i < 10; i++) {
+        const z = -ROAD_LENGTH / 2 + streetRnd() * ROAD_LENGTH;
+        const side = streetRnd() > 0.5 ? 1 : -1;
+        const instances = instanceKit(kit, `vc-kit-c${i}`);
+        for (const inst of instances) {
+          inst.position = new Vector3(side * (ROAD_WIDTH / 2 + 4), 0, z);
+          inst.scaling.scaleInPlace(2 + streetRnd() * 2);
+        }
+      }
+    }
+    const traffic = [sedan, van, police, sedan].filter(Boolean);
+    for (let i = 0; i < 16; i++) {
+      const kit = traffic[i % traffic.length];
+      if (!kit) continue;
+      const z = -ROAD_LENGTH / 2 + 30 + i * 90;
+      const side = i % 2 === 0 ? 1 : -1;
+      const instances = instanceKit(kit, `vc-parked-${i}`);
+      for (const inst of instances) {
+        inst.position = new Vector3(side * 2.2, 0, z);
+        inst.scaling.scaleInPlace(2.6);
+        inst.rotation.y = side > 0 ? Math.PI : 0;
+      }
+    }
+  } catch {
+    /* kit load failure — street keeps the procedural fallback set */
+  }
+}
+
+export async function buildStreetEnvironment(scene: Scene): Promise<StreetEnvironment> {
+  await authorStreetProps(scene);
   const quality = detectQuality(false);
 
   const asphalt = new PBRMaterial("vc-asphalt", scene);
@@ -69,53 +136,7 @@ export function buildStreetEnvironment(scene: Scene): StreetEnvironment {
   ground.material = groundMat;
   ground.receiveShadows = true;
 
-  // ---- buildings (instanced boxes with emissive windows) ----
-  const buildingMat = new StandardMaterial("vc-bldg", scene);
-  buildingMat.diffuseColor = new Color3(0.03, 0.03, 0.045);
-  buildingMat.emissiveColor = new Color3(0.02, 0.02, 0.035);
-
-  const windowTex = new DynamicTexture("vc-windows", { width: 64, height: 128 }, scene, false);
-  const wctx = windowTex.getContext() as unknown as CanvasRenderingContext2D;
-  wctx.clearRect(0, 0, 64, 128);
-  for (let y = 4; y < 124; y += 10) {
-    for (let x = 4; x < 60; x += 8) {
-      wctx.fillStyle = Math.random() > 0.4 ? "rgba(255,190,120,0.85)" : "rgba(57,217,230,0.7)";
-      wctx.fillRect(x, y, 4, 5);
-    }
-  }
-  windowTex.update(false);
-
-  const windowMat = new StandardMaterial("vc-windows-mat", scene);
-  windowMat.diffuseTexture = windowTex;
-  windowMat.emissiveTexture = windowTex;
-  windowMat.emissiveColor = new Color3(1, 1, 1);
-
-  const bldg = MeshBuilder.CreateBox("vc-bldg-mesh", { width: 12, height: 30, depth: 12 }, scene);
-  bldg.material = buildingMat;
-  const bldgFace = MeshBuilder.CreatePlane("vc-bldg-face", { width: 12, height: 30 }, scene);
-  bldgFace.material = windowMat;
-
   const buildings: InstancedMesh[] = [];
-  let seed = 7;
-  const rnd = () => {
-    seed = (seed * 16807) % 2147483647;
-    return seed / 2147483647;
-  };
-  for (let i = 0; i < 90; i++) {
-    const z = -ROAD_LENGTH / 2 + rnd() * ROAD_LENGTH;
-    const side = rnd() > 0.5 ? 1 : -1;
-    const dist = ROAD_WIDTH / 2 + 6 + rnd() * 34;
-    const w = 8 + rnd() * 14;
-    const h = 14 + rnd() * 30;
-    const b = bldg.createInstance("vc-bldg-inst");
-    b.scaling = new Vector3(w / 12, h / 30, w / 12);
-    b.position = new Vector3(side * dist, h / 2, z);
-    b.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
-    buildings.push(b);
-    const f = bldgFace.createInstance("vc-bldg-face-inst");
-    f.parent = b;
-    f.position = new Vector3(0, 0, 6.01);
-  }
 
   // ---- palms ----
   const trunkMat = new PBRMaterial("vc-trunk", scene);
@@ -273,8 +294,7 @@ export function buildStreetEnvironment(scene: Scene): StreetEnvironment {
       road.dispose();
       ground.dispose();
       dashes.dispose();
-      bldg.dispose();
-      bldgFace.dispose();
+
       trunk.dispose();
       frond.dispose();
       pole.dispose();
@@ -285,15 +305,12 @@ export function buildStreetEnvironment(scene: Scene): StreetEnvironment {
       for (const p of poles) p.dispose();
       asphalt.dispose();
       laneMat.dispose();
-      buildingMat.dispose();
-      windowMat.dispose();
       trunkMat.dispose();
       frondMat.dispose();
       poleMat.dispose();
       lampMat.dispose();
       billMatPbr.dispose();
       laneTex.dispose();
-      windowTex.dispose();
       billMat.dispose();
       hemi.dispose();
       moonlight.dispose();

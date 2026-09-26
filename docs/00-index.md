@@ -26,5 +26,6 @@ VICE//CUSTOMS is an original GTA VI-inspired interactive vehicle customization e
 | 14 | [Deployment](./14-deployment.md) | Build, deploy target, network dependencies |
 | 15 | [Known Limitations](./15-known-limitations.md) | Honest list of current limitations |
 | 16 | [Changelog](./16-changelog.md) | Versioned change history |
+| 17 | [Asset Pipeline](./17-asset-pipeline.md) | V2.5 production GLB pipeline, registry, swaps |
 
 > VICE//CUSTOMS is an original fan-made interactive experience created for the Unlayer challenge. It is not affiliated with or endorsed by Rockstar Games.
